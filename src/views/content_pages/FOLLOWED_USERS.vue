@@ -2,12 +2,12 @@
 import {defineComponent} from 'vue';
 
 export default defineComponent({
-  name: 'Space_page',
+  name: 'followedUsers',
 });
 </script>
 
 <template>
-  <div>temp text for space page</div>
+  <div>temp</div>
 </template>
 
 <style scoped>

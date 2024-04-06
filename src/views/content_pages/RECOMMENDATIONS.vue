@@ -1,17 +1,17 @@
 <script>
 import {defineComponent, ref} from 'vue';
-import Little_Tile from '@/components/LITTLE_TILE.vue';
+import LITTLE_TILE from '@/components/LITTLE_TILE.vue';
 
 export default defineComponent({
-  name: 'Recommend_page',
+  name: 'recommendationPage',
   setup() {
-    const user_id = ref('Idoyt_');
+    const uid = ref('Idoyt_');
     const indent = ref({'margin-left': 0});
 
-    return {user_id, indent};
+    return {uid, indent};
   },
   components: {
-    Little_Tile,
+    LITTLE_TILE,
   },
 });
 </script>
@@ -19,33 +19,33 @@ export default defineComponent({
 <template>
   <div id="body">
     <div id="today" class="recommend_unit">
-      <span class="recommend_title">Hi {{user_id}},今日为你推荐</span>
+      <span class="recommend_title">Hi {{uid}},今日为你推荐</span>
       <div style="display: flex;padding-right: 1vw">
         <div id="infinite_songs"  class="big_tile"></div>
-        <Little_Tile :showPlayVolume="false"></Little_Tile>
-        <Little_Tile :showPlayVolume="false"></Little_Tile>
-        <Little_Tile :showPlayVolume="false"></Little_Tile>
-        <Little_Tile :showPlayVolume="false"></Little_Tile>
+        <LITTLE_TILE :showPlayVolume="false"></LITTLE_TILE>
+        <LITTLE_TILE :showPlayVolume="false"></LITTLE_TILE>
+        <LITTLE_TILE :showPlayVolume="false"></LITTLE_TILE>
+        <LITTLE_TILE :showPlayVolume="false"></LITTLE_TILE>
       </div>
     </div>
     <div id="single" class="recommend_unit">
       <span class="recommend_title">推荐歌单</span>
       <div style="display: flex;padding-right: 1vw">
-        <Little_Tile :style="indent"></Little_Tile>
-        <Little_Tile></Little_Tile>
-        <Little_Tile></Little_Tile>
-        <Little_Tile></Little_Tile>
-        <Little_Tile></Little_Tile>
-        <Little_Tile></Little_Tile>
+        <LITTLE_TILE :style="indent"></LITTLE_TILE>
+        <LITTLE_TILE></LITTLE_TILE>
+        <LITTLE_TILE></LITTLE_TILE>
+        <LITTLE_TILE></LITTLE_TILE>
+        <LITTLE_TILE></LITTLE_TILE>
+        <LITTLE_TILE></LITTLE_TILE>
       </div>
 
       <div style="display: flex;padding-right: 1vw;margin-top: 5vh">
-        <Little_Tile :style="indent"></Little_Tile>
-        <Little_Tile></Little_Tile>
-        <Little_Tile></Little_Tile>
-        <Little_Tile></Little_Tile>
-        <Little_Tile></Little_Tile>
-        <Little_Tile></Little_Tile>
+        <LITTLE_TILE :style="indent"></LITTLE_TILE>
+        <LITTLE_TILE></LITTLE_TILE>
+        <LITTLE_TILE></LITTLE_TILE>
+        <LITTLE_TILE></LITTLE_TILE>
+        <LITTLE_TILE></LITTLE_TILE>
+        <LITTLE_TILE></LITTLE_TILE>
       </div>
     </div>
     <div id="list" class="recommend_unit">

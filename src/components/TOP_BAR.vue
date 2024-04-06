@@ -4,33 +4,34 @@ import {defineComponent, onMounted, reactive, ref} from 'vue';
 export default defineComponent({
   name: 'Top_bar',
   setup() {
-    const search_container = ref('');
-    const search_default_value = '搜索音乐';
-    const user_info = reactive({
+    const searchContainer = ref('');
+    const searchDefault = '搜索音乐';
+    const userInfo = reactive({
       id: 'default',
       name: 'login',
       avatar: 'http://101.201.66.67/assets/images/avatar/',
     });
 
-    const init_user_info = ()=>{
-      user_info.avatar = user_info.avatar + user_info.id + '.jpg';
+    const initUserInfo = ()=>{
+      userInfo.avatar = userInfo.avatar + userInfo.id + '.jpg';
     };
 
-    const change_search_container_style = (is_focus)=> {
-      search_container.value = is_focus ? 'border-bottom-left-radius: 0; border-bottom-right-radius: 0' : '';
+    const changeSearchBarStyle = (isFocus)=> {
+      searchContainer.value =
+          isFocus ? 'border-bottom-left-radius: 0; border-bottom-right-radius: 0' : '';
     };
 
     onMounted(()=>{
-      init_user_info();
+      initUserInfo();
     });
 
 
     return {
-      init_user_info,
-      change_search_container_style,
-      search_default_value,
-      search_container,
-      user_info,
+      init_user_info: initUserInfo,
+      change_search_container_style: changeSearchBarStyle,
+      search_default_value: searchDefault,
+      search_container: searchContainer,
+      user_info: userInfo,
     };
   },
 });

@@ -4,17 +4,17 @@ import audioPlayBar from '@/components/AUDIO_PLAY_BAR.vue';
 import menuBar from '@/components/MENU_BAR.vue';
 import topBar from '@/components/TOP_BAR.vue';
 
-import personalizedRecommendations from '@/views/content_pages/Personalized_recommendations.vue';
-import audioHall from '@/views/content_pages/Music_hall.vue';
-import audioRadar from '@/views/content_pages/Music_radar.vue';
+import personalizedRecommendations from '@/views/content_pages/RECOMMENDATIONS.vue';
+import audioHall from '@/views/content_pages/MUSIC_HALL.vue';
+import audioRadar from '@/views/content_pages/MUSIC_RADAR.vue';
 
-import audioCollected from '@/views/content_pages/Collected_music.vue';
-import usersFollowed from '@/views/content_pages/Followed_users.vue';
-import recordPlayed from '@/views/content_pages/Play_record.vue';
+import audioCollected from '@/views/content_pages/COLLECTED_MUSIC.vue';
+import usersFollowed from '@/views/content_pages/FOLLOWED_USERS.vue';
+import recordPlayed from '@/views/content_pages/AUDIO_RECORD.vue';
 
 
 export default defineComponent({
-  name: 'Home_page',
+  name: 'homePage',
   // 工具类Component需要放在组件Personalized之前
   components: {
     menuBar,

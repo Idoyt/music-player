@@ -2,12 +2,12 @@
 import {defineComponent} from 'vue';
 
 export default defineComponent({
-  name: 'Collected_music',
+  name: 'spacePage',
 });
 </script>
 
 <template>
-  <div>temp</div>
+  <div>temp text for space page</div>
 </template>
 
 <style scoped>

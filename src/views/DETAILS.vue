@@ -4,7 +4,7 @@ import audioPlayBar from '@/components/AUDIO_PLAY_BAR.vue';
 import {getAudioInfo} from '@/utils/music_play_bus';
 
 export default defineComponent({
-  name: 'Player_page',
+  name: 'audioPlay',
   components: {
     audioPlayBar,
   },

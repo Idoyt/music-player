@@ -6,7 +6,7 @@ import '@/utils/input_check';
 import {emailCheck, phoneCheck} from '@/utils/input_check';
 
 export default defineComponent({
-  name: 'Login_page',
+  name: 'loginPage',
   components: {
     Google_Input: GOOGLE_INPUT,
   },

@@ -2,12 +2,12 @@
 import {defineComponent} from 'vue';
 
 export default defineComponent({
-  name: 'Admin_entrance',
+  name: 'registerPage',
 });
 </script>
 
 <template>
-  <div>temp text for admin page</div>
+  <div>temp text for register page</div>
 </template>
 
 <style scoped>
