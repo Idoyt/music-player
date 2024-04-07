@@ -104,7 +104,6 @@ export function setCurrentTime(method= 'none', value= -1) {
     domAudio.currentTime = domAudio.duration * value;
     const selectedTime = domAudio.currentTime;
     // if (audioInfo.nowLine < 0) audioInfo.nowLine = 0;
-    console.log(selectedTime);
 
     for (let i = 0; i < audioInfo.lyric.lyr.length; i++) {
       const tempItemTime = audioInfo.lyric.lyr[i].time;

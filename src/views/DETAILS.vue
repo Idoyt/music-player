@@ -66,7 +66,7 @@ export default defineComponent({
           <div id="lyric" ref="domLyric" style="transition: .5s; margin-top: 50%">
             <div v-if="finishLoadLyric">
               <p v-for="(line, index) in audioInfo.lyric.lyr" :key="index" style="margin: 0;height: 8vh">
-                <span :id=index style="color: white; font-size: 2vh">{{line.text}}</span>
+                <span :id=index style="color: white; font-size: 2vh; user-select: none;">{{line.text}}</span>
               </p>
             </div>
             <div v-else>loading lyric</div>
@@ -148,5 +148,6 @@ export default defineComponent({
 {
   height: 70vh;
   overflow: hidden;
+  pointer-events: none;
 }
 </style>

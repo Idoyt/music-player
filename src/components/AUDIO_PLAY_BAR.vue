@@ -1,5 +1,5 @@
 <script>
-import {computed, defineComponent, ref} from 'vue';
+import {computed, defineComponent, ref, watch} from 'vue';
 import {getAudioInfo, getAudioList, setCurrentTime, togglePlayStatus} from '@/utils/music_play_bus';
 
 export default defineComponent({
@@ -15,27 +15,46 @@ export default defineComponent({
 
     const audioInfo = computed(()=> getAudioInfo());
     const audioList = computed(()=> getAudioList());
+    const dragging = ref(false);
 
 
     // eslint-disable-next-line max-len
-    let ratio = computed(()=>(audioInfo.value.currentTime.value / audioInfo.value.duration.value * 100).toString() + '%');
+    const busRatio = computed(()=>(audioInfo.value.currentTime.value / audioInfo.value.duration.value * 100).toString() + '%');
+    const localRatio = ref('0%');
 
-    const mouseUp = (event)=>{
+    const clickProcess = (event)=>{
       setCurrentTime('ratio', parseFloat((event.clientX / document.body.clientWidth).toFixed(2)));
-      ratio = computed(()=>(audioInfo.value.currentTime.value / audioInfo.value.duration.value * 100).toString() + '%');
     };
     const mouseDown = (event)=> {
-      ratio = computed(()=>(((event.clientX /document.body.clientWidth) * 100).toFixed(2) + '%'));
-      console.log(ratio.value);
+      // document.getElementById('processBox').classList.add('hover');
+      event.preventDefault();
+      dragging.value = true;
+      document.getElementById('processPoint').classList.add('processPointHover');
+      document.addEventListener('mousemove', mouseMoveListener);
+      document.addEventListener('mouseup', mouseUp);
     };
+    const mouseUp = (event)=> {
+      setCurrentTime('ratio', parseFloat(localRatio.value.substring(0, localRatio.value.length-1))/100);
+      dragging.value = false;
+      document.getElementById('processPoint').classList.remove('processPointHover');
+      document.removeEventListener('mousemove', mouseMoveListener);
+      document.removeEventListener('mouseup', mouseUp);
+    };
+    const mouseMoveListener = (event)=> {
+      localRatio.value= ((event.clientX / document.body.clientWidth) * 100).toFixed(2) + '%';
+    };
+    watch(busRatio, (value)=>{
+      if (!dragging.value) localRatio.value = value;
+    });
+
     return {
       playIconUrl,
       audioInfo,
       audioList,
-      ratio,
+      localRatio,
 
       togglePlayStatus,
-      mouseUp,
+      clickProcess,
       mouseDown,
     };
   },
@@ -44,9 +63,9 @@ export default defineComponent({
 
 <template>
   <div>
-    <div id="processBox" @mousedown=mouseDown @mouseup=mouseUp>
+    <div id="processBox" @click="clickProcess" @mousedown="mouseDown">
       <div id="processBar">
-        <div id="processRedBar" :style="{width:ratio}">
+        <div id="processRedBar" :style="{width: localRatio}">
           <div id="processPoint"></div>
         </div>
       </div>
@@ -145,11 +164,13 @@ export default defineComponent({
   position: absolute;
   right: calc(-1 * var(--processBar-height));
   border-radius: calc(999 * var(--processBar-height));
+  height: 0;
+  width: 0;
   background-color: #f3263f;
 
   transition-duration: .2s;
 }
-#processBox:hover > #processBar > #processRedBar > #processPoint
+#processBox:hover > #processBar > #processRedBar > #processPoint, #processPoint.processPointHover
 {
   height: calc(2 * var(--processBar-height));
   width: calc(2 * var(--processBar-height));
