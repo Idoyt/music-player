@@ -1,6 +1,6 @@
 <script>
 import {computed, defineComponent, ref} from 'vue';
-import {getAudioInfo, getAudioList, initPlayer, togglePlayStatus} from '@/utils/music_play_bus';
+import {getAudioInfo, getAudioList, setCurrentTime, togglePlayStatus} from '@/utils/music_play_bus';
 
 export default defineComponent({
   name: 'Music_Play_Bar',
@@ -17,10 +17,17 @@ export default defineComponent({
     const audioList = computed(()=> getAudioList());
 
 
-    initPlayer();
     // eslint-disable-next-line max-len
-    const ratio = computed(()=>(audioInfo.value.currentTime.value / audioInfo.value.duration.value * 100).toString() + '%');
+    let ratio = computed(()=>(audioInfo.value.currentTime.value / audioInfo.value.duration.value * 100).toString() + '%');
 
+    const mouseUp = (event)=>{
+      setCurrentTime('ratio', parseFloat((event.clientX / document.body.clientWidth).toFixed(2)));
+      ratio = computed(()=>(audioInfo.value.currentTime.value / audioInfo.value.duration.value * 100).toString() + '%');
+    };
+    const mouseDown = (event)=> {
+      ratio = computed(()=>(((event.clientX /document.body.clientWidth) * 100).toFixed(2) + '%'));
+      console.log(ratio.value);
+    };
     return {
       playIconUrl,
       audioInfo,
@@ -28,70 +35,77 @@ export default defineComponent({
       ratio,
 
       togglePlayStatus,
+      mouseUp,
+      mouseDown,
     };
   },
 });
 </script>
 
 <template>
-
-  <div id="processBar">
-    <div id="process_red_bar" :style="{width:ratio}" style="border: #F3263F  solid;"></div>
-  </div>
-  <div id="playBarBody">
-
-    <div id="leftArea">
-      <div v-show=!isDetail id="cover">
-        <a id="cover_mask" href="/player"></a>
-      </div>
-      <div style="display: flex; flex-direction: column; height: inherit; margin-left: 1vw; justify-content: center">
-        <div v-show=!isDetail id="audioTitle">
-          <span style="white-space: nowrap; font-size: 2vh">{{audioInfo.title}}</span>
-        </div>
-        <div id="userBtnArea">
-          <span id="like" class="userBtn"></span>
-          <span id="comment" class="userBtn"></span>
-          <span id="append" class="userBtn"></span>
-          <span id="share" class="userBtn"></span>
+  <div>
+    <div id="processBox" @mousedown=mouseDown @mouseup=mouseUp>
+      <div id="processBar">
+        <div id="processRedBar" :style="{width:ratio}">
+          <div id="processPoint"></div>
         </div>
       </div>
-      <span v-show=isDetail id="timestamp" style="color: white">
+    </div>
+
+
+    <div id="playBarBody">
+      <div id="leftArea">
+        <div v-show=!isDetail id="cover">
+          <a id="coverMask" href="/player"></a>
+        </div>
+        <div style="display: flex; flex-direction: column; height: inherit; margin-left: 1vw; justify-content: center">
+          <div v-show=!isDetail id="audioTitle">
+            <span style="white-space: nowrap; font-size: 2vh">{{audioInfo.title}}</span>
+          </div>
+          <div id="userBtnArea">
+            <span id="like" class="userBtn"></span>
+            <span id="comment" class="userBtn"></span>
+            <span id="append" class="userBtn"></span>
+            <span id="share" class="userBtn"></span>
+          </div>
+        </div>
+        <span v-show=isDetail id="timestamp" style="color: white">
         {{audioInfo.currentTime.min}}:{{audioInfo.currentTime.sec}} /
         {{audioInfo.duration.min}}:{{audioInfo.duration.sec}}
       </span>
 
-    </div>
-
-
-    <div id="middleArea">
-      <span id="play_method"></span>
-      <span id="prevBigBtn"></span>
-      <div id="playBigBtn" :style="{'background-image':`url('${playIconUrl[audioInfo.status]}')`}" @click="togglePlayStatus">
-
       </div>
-      <span id="nxtBigBtn"></span>
-      <span id="volume"></span>
-    </div>
 
-    <div id="rightArea">
+
+      <div id="middleArea">
+        <span id="play_method"></span>
+        <span id="prevBigBtn"></span>
+        <div id="playBigBtn" :style="{'background-image':`url('${playIconUrl[audioInfo.status]}')`}" @click="togglePlayStatus">
+
+        </div>
+        <span id="nxtBigBtn"></span>
+        <span id="volume"></span>
+      </div>
+
+      <div id="rightArea">
       <span v-show=!isDetail id="timestamp">
         {{audioInfo.currentTime.min}}:{{audioInfo.currentTime.sec}} /
         {{audioInfo.duration.min}}:{{audioInfo.duration.sec}}
       </span>
-      <span id="toggle_lyrics"></span>
-      <div id="playlist">
-        <span id="listIcon"></span>
-        <span id="listLength">{{audioList.length}}</span>
+        <span id="toggle_lyrics"></span>
+        <div id="playlist">
+          <span id="listIcon"></span>
+          <span id="listLength">{{audioList.length}}</span>
+        </div>
       </div>
     </div>
   </div>
-
-
 </template>
 
 <style scoped>
 #playBarBody
 {
+  z-index: 0;
   display: flex;
   width: 100%;
   height: 10vh;
@@ -101,12 +115,44 @@ export default defineComponent({
 }
 
 /* 顶部进度条 */
+#processBox
+{
+  display: flex;
+  align-items: center;
+  height: 2vh;
+
+  overflow: hidden;
+}
 #processBar
 {
-  height: .6vh;
+  z-index: 1;
+  display: inline-flex;
+  height: var(--processBar-height);
   width: 100%;
-  overflow: hidden;
   background-color: #b6b6b6;
+
+  --processBar-height: .6vh;
+}
+#processRedBar
+{
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #f3263f;
+}
+#processPoint
+{
+  position: absolute;
+  right: calc(-1 * var(--processBar-height));
+  border-radius: calc(999 * var(--processBar-height));
+  background-color: #f3263f;
+
+  transition-duration: .2s;
+}
+#processBox:hover > #processBar > #processRedBar > #processPoint
+{
+  height: calc(2 * var(--processBar-height));
+  width: calc(2 * var(--processBar-height));
 }
 
 
@@ -130,11 +176,11 @@ export default defineComponent({
   background-position: center;
   background-repeat: no-repeat;
 }
-#cover:hover > #cover_mask
+#cover:hover > #coverMask
 {
   display: block;
 }
-#cover_mask
+#coverMask
 {
   display: none;
 

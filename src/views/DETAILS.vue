@@ -13,21 +13,23 @@ export default defineComponent({
     const finishLoadLyric = ref(audioInfo.value);
     const domLyric = ref(null);
     const nowLine = computed(()=>audioInfo.value.nowLine);
+    let lastLine = -1;
 
     watch(nowLine, ()=>{
+      // console.log('now line in details.vue watching', nowLine.value);
       const domNowLine =
-          document.getElementById((audioInfo.value.nowLine - 1).toString());
+          document.getElementById((audioInfo.value.nowLine).toString());
       let domLastLine = null;
 
       domLyric.value.style.marginTop =
-          'calc(50% - ' + ((nowLine.value-1) * 8).toString() + 'vh' + ')';
-      domNowLine.style.color = '#88cccc';
-      console.log(domNowLine);
-      if (nowLine.value > 1) {
+          'calc(50% - ' + (nowLine.value * 8).toString() + 'vh' + ')';
+      if (domNowLine) domNowLine.style.color = '#88cccc';
+      if (lastLine !== -1) {
         domLastLine =
-            document.getElementById((audioInfo.value.nowLine - 2).toString());
-        domLastLine.style.color = 'white';
+            document.getElementById((lastLine).toString());
+        if (domLastLine) domLastLine.style.color = 'white';
       }
+      lastLine = nowLine.value;
     });
 
     return {finishLoadLyric, domLyric, audioInfo};

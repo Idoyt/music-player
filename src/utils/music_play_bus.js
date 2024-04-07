@@ -6,7 +6,7 @@ const audioList = ref([]);
 const audioInfo = reactive({
   index: 0,
   tag: '',
-  nowLine: 0,
+  nowLine: -1,
   lyric: {},
   url: 'http://101.201.66.67/assets/audio/MSC-00001.ogg',
   title: 'audio title',
@@ -22,9 +22,10 @@ const audioInfo = reactive({
  */
 export async function initPlayer() {
   domAudio.src = audioInfo.url;
+  getLyric('http://101.201.66.67/assets/audio/lyric/LRC-00001.utf8.lrc');
   domAudio.addEventListener('loadedmetadata', updateCurrentTime);
   domAudio.addEventListener('timeupdate', updateCurrentTime);
-  await getLyric('http://101.201.66.67/assets/audio/lyric/LRC-00001.utf8.lrc');
+  console.log(audioInfo.nowLine);
 }
 
 /**
@@ -39,9 +40,10 @@ export function togglePlayStatus() {
 
 /**
  * 更新播放器时间
- * @constructor
+ * @param {boolean} needUpdateNowLine 需要通过时间更新now line
  */
-function updateCurrentTime() {
+function updateCurrentTime(needUpdateNowLine = true) {
+  // update time
   audioInfo.duration.value = domAudio.duration.toFixed(2);
   audioInfo.currentTime.value = domAudio.currentTime.toFixed(2);
 
@@ -57,17 +59,18 @@ function updateCurrentTime() {
   audioInfo.duration.sec = (tempSec.length > 1 ? '' : '0') + tempSec;
 
   // update the value of nowLine
-  const time = audioInfo.lyric.lyr[audioInfo.nowLine].time;
-  const split = time.indexOf(':');
-  let triggerTime = 999999999;
-  // console.log('断点:', split, time);
-  if (time) {
-    triggerTime =
-        parseInt(time.substring(0, split)) * 60 +
-        parseInt(time.substring(split+1));
+
+  if (needUpdateNowLine && audioInfo.nowLine < audioInfo.lyric.lyr.length-1) {
+    // console.log(audioInfo.nowLine, audioInfo.lyric.lyr.length);
+    const nextLineTime = audioInfo.lyric.lyr[audioInfo.nowLine+1].time;
+    let nextLineTriggerTime = 999999999;
+    if (nextLineTime) {
+      nextLineTriggerTime =
+          parseInt(nextLineTime.substring(0, 2)) * 60 + parseFloat(nextLineTime.substring(3));
+    }
+    const nowTime = parseFloat(audioInfo.currentTime.value);
+    if (nextLineTriggerTime <= nowTime && audioInfo.nowLine < audioInfo.lyric.lyr.length-1) audioInfo.nowLine++;
   }
-  const nowTime = parseFloat(audioInfo.currentTime.value);
-  if (triggerTime < nowTime) audioInfo.nowLine++;
 }
 
 /**
@@ -86,6 +89,40 @@ export function getAudioInfo() {
  */
 export function getAudioList() {
   return audioList;
+}
+
+/**
+ * user use this function to set current time
+ * @param {string} method
+ * @param {number} value has two value, line for drag lyric and ratio for drag process bar
+ * @return {number} temp, I will change it soon
+ */
+export function setCurrentTime(method= 'none', value= -1) {
+  if (method === 'none' || value === -1) return;
+
+  if (method === 'ratio') {
+    domAudio.currentTime = domAudio.duration * value;
+    const selectedTime = domAudio.currentTime;
+    // if (audioInfo.nowLine < 0) audioInfo.nowLine = 0;
+    console.log(selectedTime);
+
+    for (let i = 0; i < audioInfo.lyric.lyr.length; i++) {
+      const tempItemTime = audioInfo.lyric.lyr[i].time;
+      const itemTime = parseInt(tempItemTime.substring(0, 2)) * 60 + parseFloat(tempItemTime.substring(3));
+
+      if (itemTime >= selectedTime) {
+        audioInfo.nowLine = i-1;
+        break;
+      }
+      if (i === audioInfo.lyric.lyr.length-1) {
+        audioInfo.nowLine = i;
+      }
+    }
+  }
+  if (method === 'line') {
+    return 2;
+  }
+  updateCurrentTime(false);
 }
 
 /**

@@ -83,6 +83,8 @@ export default defineComponent({
 }
 #mainContent
 {
+  display: flex;
+  flex-direction: column;
   height: 100vh;
   width: calc(100vw - var(--MenuBar-width));
   font-family: miku_font, serif;
@@ -96,7 +98,7 @@ export default defineComponent({
 {
   z-index: 1;
   margin-top: 10vh;
-  height: 80vh;
+  margin-bottom: 12vh;
   overflow: auto;
 }
 #content::-webkit-scrollbar
@@ -108,7 +110,7 @@ export default defineComponent({
   position: fixed;
   bottom: 0;
   z-index:2;
-  height: 10vh;
+  height: 12vh;
   width: inherit;
 }
 #topBar
