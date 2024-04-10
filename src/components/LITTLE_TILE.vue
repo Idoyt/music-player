@@ -3,9 +3,6 @@ import {defineComponent} from 'vue';
 
 export default defineComponent({
   name: 'Little_Tile',
-  setup(props) {
-    console.log(props.indent);
-  },
   props: {
     indent: Object,
     showPlayVolume: {

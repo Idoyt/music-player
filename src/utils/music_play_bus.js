@@ -25,7 +25,6 @@ export async function initPlayer() {
   getLyric('http://101.201.66.67/assets/audio/lyric/LRC-00001.utf8.lrc');
   domAudio.addEventListener('loadedmetadata', updateCurrentTime);
   domAudio.addEventListener('timeupdate', updateCurrentTime);
-  console.log(audioInfo.nowLine);
 }
 
 /**
@@ -40,9 +39,9 @@ export function togglePlayStatus() {
 
 /**
  * 更新播放器时间
- * @param {boolean} needUpdateNowLine 需要通过时间更新now line
+ * @param {boolean} needPassiveUpdateNowLine 需要通过时间更新now line
  */
-function updateCurrentTime(needUpdateNowLine = true) {
+function updateCurrentTime(needPassiveUpdateNowLine = true) {
   // update time
   audioInfo.duration.value = domAudio.duration.toFixed(2);
   audioInfo.currentTime.value = domAudio.currentTime.toFixed(2);
@@ -60,7 +59,7 @@ function updateCurrentTime(needUpdateNowLine = true) {
 
   // update the value of nowLine
 
-  if (needUpdateNowLine && audioInfo.nowLine < audioInfo.lyric.lyr.length-1) {
+  if (needPassiveUpdateNowLine && audioInfo.nowLine < audioInfo.lyric.lyr.length-1) {
     // console.log(audioInfo.nowLine, audioInfo.lyric.lyr.length);
     const nextLineTime = audioInfo.lyric.lyr[audioInfo.nowLine+1].time;
     let nextLineTriggerTime = 999999999;
@@ -103,7 +102,6 @@ export function setCurrentTime(method= 'none', value= -1) {
   if (method === 'ratio') {
     domAudio.currentTime = domAudio.duration * value;
     const selectedTime = domAudio.currentTime;
-    // if (audioInfo.nowLine < 0) audioInfo.nowLine = 0;
 
     for (let i = 0; i < audioInfo.lyric.lyr.length; i++) {
       const tempItemTime = audioInfo.lyric.lyr[i].time;
@@ -120,6 +118,9 @@ export function setCurrentTime(method= 'none', value= -1) {
   }
   if (method === 'line') {
     return 2;
+  }
+  if (method === 'currentTime') {
+
   }
   updateCurrentTime(false);
 }
@@ -141,7 +142,7 @@ export async function getLyric(url) {
 
 /**
  * to parse the lrc to json
- * @param {json} data
+ * @param {string} data
  * @return {{ar: string, au: string, offset: string, lyr: *[], ti: string, by: string, al: string}}
  */
 function parseLyric(data) {
