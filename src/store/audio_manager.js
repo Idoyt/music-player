@@ -1,27 +1,21 @@
 import {createStore} from 'vuex';
-import {initPlayer} from '@/utils/music_play_bus';
 
 const audioModule = {
+  namespaced: true,
   state: {
-    audioInfo: {},
-    audioList: [],
-    domAudio: null,
+    audioCurrentTime: -1,
+    audioNowline: -1,
   },
   mutations: {
-    updateAudioInfo() {
-
+    updateAudioCurrentTime(state, domCurrentTime) {
+      state.audioCurrentTime = parseFloat(domCurrentTime.toFixed(2));
     },
-    addEventListener(state) {
-      state.domAudio.addEventListener('loadedmetadata' );
+    updateAudioNowLine(state, nowLine) {
+      state.audioNowline = nowLine;
     },
-
   },
   actions: {
-    initAudioPlayer(context) {
-      context.state.domAudio = new Audio();
-      context.commit('addEventListener');
-      initPlayer();
-    },
+
   },
 };
 

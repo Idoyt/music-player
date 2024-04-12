@@ -1,6 +1,6 @@
 <script>
 import {computed, defineComponent, ref, watch} from 'vue';
-import {getAudioInfo, getAudioList, setCurrentTime, togglePlayStatus} from '@/utils/music_play_bus';
+import {getAudioInfo, getAudioList, setCurrentTime, togglePlayStatus} from '@/utils/music_play_bus/private';
 
 export default defineComponent({
   name: 'Music_Play_Bar',
@@ -41,7 +41,10 @@ export default defineComponent({
       document.removeEventListener('mouseup', mouseUp);
     };
     const mouseMoveListener = (event)=> {
-      localRatio.value= ((event.clientX / document.body.clientWidth) * 100).toFixed(2) + '%';
+      const domBody = document.getElementById('audioPlayBarBody');
+      const diff = document.body.clientWidth - domBody.clientWidth;
+      const clientX = event.clientX - diff > 0 ? event.clientX - diff : 0;
+      localRatio.value= ((clientX / domBody.clientWidth) * 100).toFixed(2) + '%';
     };
     watch(busRatio, (value)=>{
       if (!dragging.value) localRatio.value = value;
@@ -62,7 +65,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div id="audioPlayBarBody">
     <div id="processBox" @click="clickProcess" @mousedown="mouseDown">
       <div id="processBar">
         <div id="processRedBar" :style="{width: localRatio}">
@@ -75,7 +78,7 @@ export default defineComponent({
     <div id="playBarBody">
       <div id="leftArea">
         <div v-show=!isDetail id="cover">
-          <a id="coverMask" href="/player"></a>
+          <router-link id="coverMask" to="/player"></router-link>
         </div>
         <div style="display: flex; flex-direction: column; height: inherit; margin-left: 1vw; justify-content: center">
           <div v-show=!isDetail id="audioTitle">

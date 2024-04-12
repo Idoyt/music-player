@@ -1,7 +1,8 @@
 <script>
-import {computed, defineComponent, ref, watch} from 'vue';
+import {computed, defineComponent, onBeforeMount, onBeforeUnmount, ref, watch} from 'vue';
 import audioPlayBar from '@/components/AUDIO_PLAY_BAR.vue';
-import {getAudioInfo} from '@/utils/music_play_bus';
+import {getAudioInfo, getCurrentTime, setCurrentTime} from '@/utils/music_play_bus/private';
+import {useStore} from 'vuex';
 
 export default defineComponent({
   name: 'audioPlay',
@@ -14,9 +15,16 @@ export default defineComponent({
     const domLyric = ref(null);
     const nowLine = computed(()=>audioInfo.value.nowLine);
     let lastLine = -1;
+    const store = useStore();
+
+    onBeforeMount(()=>{
+      setCurrentTime('currentTime', store.state['audioModule/audioCurrentTime']);
+    });
+    onBeforeUnmount(()=>{
+      store.commit('audioModule/updateAudioInfo', getCurrentTime());
+    });
 
     watch(nowLine, ()=>{
-      // console.log('now line in details.vue watching', nowLine.value);
       const domNowLine =
           document.getElementById((audioInfo.value.nowLine).toString());
       let domLastLine = null;

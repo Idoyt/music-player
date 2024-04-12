@@ -1,5 +1,5 @@
 <script>
-import {defineComponent, getCurrentInstance, ref} from 'vue';
+import {defineComponent, getCurrentInstance, onBeforeUnmount, ref} from 'vue';
 import audioPlayBar from '@/components/AUDIO_PLAY_BAR.vue';
 import menuBar from '@/components/MENU_BAR.vue';
 import topBar from '@/components/TOP_BAR.vue';
@@ -11,6 +11,8 @@ import audioRadar from '@/views/content_pages/MUSIC_RADAR.vue';
 import audioCollected from '@/views/content_pages/COLLECTED_MUSIC.vue';
 import usersFollowed from '@/views/content_pages/FOLLOWED_USERS.vue';
 import recordPlayed from '@/views/content_pages/AUDIO_RECORD.vue';
+import {useStore} from 'vuex';
+import {getCurrentTime} from '@/utils/music_play_bus/private';
 
 
 export default defineComponent({
@@ -37,6 +39,12 @@ export default defineComponent({
     };
 
     const loginStatus = ref(true);
+
+    onBeforeUnmount(()=>{
+      const store = useStore();
+      store.commit('audioModule/updateAudioCurrentTime', getCurrentTime());
+    });
+
     return {
       usingComponent,
       getUsingComponent,

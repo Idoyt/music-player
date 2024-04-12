@@ -22,7 +22,7 @@ const audioInfo = reactive({
  */
 export async function initPlayer() {
   domAudio.src = audioInfo.url;
-  getLyric('http://101.201.66.67/assets/audio/lyric/LRC-00001.utf8.lrc');
+  await getLyric('http://101.201.66.67/assets/audio/lyric/LRC-00001.utf8.lrc');
   domAudio.addEventListener('loadedmetadata', updateCurrentTime);
   domAudio.addEventListener('timeupdate', updateCurrentTime);
 }
@@ -60,7 +60,6 @@ function updateCurrentTime(needPassiveUpdateNowLine = true) {
   // update the value of nowLine
 
   if (needPassiveUpdateNowLine && audioInfo.nowLine < audioInfo.lyric.lyr.length-1) {
-    // console.log(audioInfo.nowLine, audioInfo.lyric.lyr.length);
     const nextLineTime = audioInfo.lyric.lyr[audioInfo.nowLine+1].time;
     let nextLineTriggerTime = 999999999;
     if (nextLineTime) {
@@ -99,30 +98,33 @@ export function getAudioList() {
 export function setCurrentTime(method= 'none', value= -1) {
   if (method === 'none' || value === -1) return;
 
-  if (method === 'ratio') {
-    domAudio.currentTime = domAudio.duration * value;
-    const selectedTime = domAudio.currentTime;
+  if (method === 'ratio') domAudio.currentTime = domAudio.duration * value;
+  if (method === 'line') return 2;
+  if (method === 'currentTime') {
+    domAudio.currentTime = value - 0.01;
+  }
+  updateNowLineProactively(domAudio.currentTime);
+  updateCurrentTime(false);
+}
 
-    for (let i = 0; i < audioInfo.lyric.lyr.length; i++) {
-      const tempItemTime = audioInfo.lyric.lyr[i].time;
-      const itemTime = parseInt(tempItemTime.substring(0, 2)) * 60 + parseFloat(tempItemTime.substring(3));
+/**
+ * update now line
+ * @param {number} nowTime
+ */
+function updateNowLineProactively(nowTime) {
+  for (let i = 0; i < audioInfo.lyric.lyr.length; i++) {
+    const tempItemTime = audioInfo.lyric.lyr[i].time;
+    const itemTime = parseInt(tempItemTime.substring(0, 2)) * 60 + parseFloat(tempItemTime.substring(3));
 
-      if (itemTime >= selectedTime) {
-        audioInfo.nowLine = i-1;
-        break;
-      }
-      if (i === audioInfo.lyric.lyr.length-1) {
-        audioInfo.nowLine = i;
-      }
+    if (itemTime >= nowTime) {
+      audioInfo.nowLine = i-1;
+      break;
+    }
+    if (i === audioInfo.lyric.lyr.length-1) {
+      audioInfo.nowLine = i;
     }
   }
-  if (method === 'line') {
-    return 2;
-  }
-  if (method === 'currentTime') {
-
-  }
-  updateCurrentTime(false);
+  console.log(audioInfo.nowLine);
 }
 
 /**
@@ -173,4 +175,12 @@ function parseLyric(data) {
     }
   }
   return lyric;
+}
+
+/**
+ * get current time of audio player
+ * @return {number}
+ */
+export function getCurrentTime() {
+  return domAudio.currentTime;
 }
