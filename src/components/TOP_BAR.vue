@@ -27,34 +27,34 @@ export default defineComponent({
 
 
     return {
-      init_user_info: initUserInfo,
-      change_search_container_style: changeSearchBarStyle,
-      search_default_value: searchDefault,
-      search_container: searchContainer,
-      user_info: userInfo,
+      initUserInfo,
+      changeSearchBarStyle,
+      searchDefault,
+      searchContainer,
+      userInfo,
     };
   },
 });
 </script>
 
 <template>
-  <div id="component_body">
-    <div id="search" :style="search_container">
-      <input id="input" :placeholder=this.search_default_value @blur="change_search_container_style(false)" @focus="change_search_container_style(true)">
-      <span id="search_icon"/>
-      <div id="search_info" @click.prevent>
+  <div id="topBarBody">
+    <div id="search" :style="searchContainer">
+      <input id="input" :placeholder=searchDefault @blur="changeSearchBarStyle(false)" @focus="changeSearchBarStyle(true)">
+      <span id="searchIcon"/>
+      <div id="searchInfo" @click.prevent>
         <div id="hot" @click.stop></div>
         <div id="history" @click.stop></div>
         <div id="pre_result" @click.stop></div>
       </div>
     </div>
 
-    <div id="right_area">
-      <div id="user_info">
-        <img id="usr_avatar" :src=user_info.avatar alt="user's avatar">
-        <span id="usr_id">{{user_info.name}}</span>
+    <div id="rightArea">
+      <div id="userInfo">
+        <img id="userAvatar" :src=userInfo.avatar alt="user's avatar">
+        <span id="uid">{{userInfo.name}}</span>
       </div>
-      <div id="function_btn">
+      <div id="functionBtn">
         <span id="msg" class="btn"></span>
         <span id="set" class="btn"></span>
         <span id="thm" class="btn"></span>
@@ -65,7 +65,7 @@ export default defineComponent({
 </template>
 
 <style scoped>
-#component_body
+#topBarBody
 {
   display: flex;
   align-items: center;
@@ -106,11 +106,11 @@ export default defineComponent({
 {
   opacity: 0;
 }
-#input:focus + #search_icon + #search_info
+#input:focus + #searchIcon + #searchInfo
 {
   display: block;
 }
-#search_info
+#searchInfo
 {
   display: none;
   position: absolute;
@@ -124,11 +124,11 @@ export default defineComponent({
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(10px);
 }
-#input:focus + #search_icon
+#input:focus + #searchIcon
 {
   display: block;
 }
-#search_icon
+#searchIcon
 {
   display: none;
   height: 2.5vh;
@@ -137,16 +137,16 @@ export default defineComponent({
   background-image: url("http://101.201.66.67/static/icon/top_bar/search.svg");
   background-size: cover;
 }
-#right_area
+#rightArea
 {
   margin-right: 3vw;
   display: flex;
 }
-#user_info
+#userInfo
 {
   display: flex;
 }
-#usr_avatar
+#userAvatar
 {
   margin-right: 1vw;
   height: 3.5vh;
@@ -154,11 +154,11 @@ export default defineComponent({
 
   border-radius: 1vh;
 }
-#usr_id
+#uid
 {
   vertical-align: bottom;
 }
-#function_btn
+#functionBtn
 {
   display: flex;
   margin-left: 1vw;

@@ -1,5 +1,5 @@
 <script>
-import {defineComponent, ref} from 'vue';
+import {computed, defineComponent, onMounted, ref} from 'vue';
 
 export default defineComponent({
   name: 'Google_Input',
@@ -12,28 +12,56 @@ export default defineComponent({
       type: String,
       default: 'Correct',
     },
+    type: {
+      type: String,
+      // text, password
+      default: 'text',
+    },
   },
   setup(props) {
     const inputText = ref('');
     const localStatus = ref(props.status);
     const domInput = ref(null);
     const domPlaceholder = ref(null);
+    const inputType = ref('text');
+    const isPwd = ref(false);
+    const showPwdStatus = ref('clos');
+    const allowedType = ['text', 'password'];
+    const imageSrc = computed(()=>{
+      return 'http://101.201.66.67/static/icon/google_input/eye_' + showPwdStatus.value + '_gray.svg';
+    });
+
+    inputType.value = allowedType.includes(props.type) ? props.type : 'text';
+    isPwd.value = (inputType.value === 'password');
 
     const focus = ()=>{
       if (!domInput.value) return;
-      domInput.value.className = '';
       domInput.value.classList.add('input' + localStatus.value);
+      domInput.value.classList.add('inputFocus');
 
-      domPlaceholder.value.className = '';
       domPlaceholder.value.classList.add('placeholder' + localStatus.value);
+      domPlaceholder.value.classList.add('placeholderFocus');
     };
     const blur = ()=>{
-      console.log(1);
       if (inputText.value === '') {
-        domInput.value.className='';
-        domPlaceholder.value.className='';
-      } else domInput.value.focus();
+        domInput.value.classList.remove('input' + localStatus.value);
+        domInput.value.classList.remove('inputFocus');
+
+        domPlaceholder.value.classList.remove('placeholder' + localStatus.value);
+        domPlaceholder.value.classList.remove('placeholderFocus');
+        showPassword();
+      } else focus();
     };
+    const showPassword = ()=>{
+      showPwdStatus.value = showPwdStatus.value === 'clos' ? 'open' : 'clos';
+      inputType.value = showPwdStatus.value === 'clos' ? 'password' : 'text';
+    };
+    onMounted(()=>{
+      if (inputType.value === 'password') {
+        if (!domInput.value) return;
+        domInput.value.classList.add('inputPwd');
+      }
+    });
 
     return {
       inputText,
@@ -41,22 +69,37 @@ export default defineComponent({
       blur,
       domInput,
       domPlaceholder,
+      inputType,
+      showPassword,
+      isPwd,
+      imageSrc,
     };
   },
 });
 </script>
 
 <template>
-  <div id="inputBox">
-    <input
-        id="input" ref="domInput"
-        v-model="inputText"
-        @blur="blur"
-        @focus="focus"
-        @input="$emit('value', inputText)"
-    >
-    <label id="placeholder" ref="domPlaceholder">{{$props.placeholder}}</label>
+  <div>
+    <div id="inputBox">
+      <input
+          ref="domInput" v-model="inputText"
+          :type=inputType
+          class="input"
+          @blur="blur"
+          @focus="focus"
+          @input="$emit('value', inputText)"
+      >
+      <label ref="domPlaceholder" class="placeholder">{{$props.placeholder}}</label>
+      <img
+          v-if="isPwd && inputText !== ''"
+          id="showPwd"
+          :src=imageSrc
+          @click = showPassword
+      />
+    </div>
+
   </div>
+
 </template>
 
 <style scoped>
@@ -66,15 +109,16 @@ export default defineComponent({
   display: flex;
   align-items: center;
 
-  width: 80%;
+  width: 20vw;
 
   --input_border-width: 2px;
+  --input-height: 8vh;
 }
-#input
+.input
 {
   z-index: 1;
   position: absolute;
-  height: 8vh;
+  height: var(--input-height);
   width: inherit;
 
   padding: 0;
@@ -87,11 +131,11 @@ export default defineComponent({
   border-radius: 1vh;
   font-size: 2.5vh;
 }
-#input:focus
+.inputFocus
 {
-  border-width: .5vh;
+  border-width: .5vh !important;
 }
-#placeholder
+.placeholder
 {
   z-index: 2;
   position: absolute;
@@ -106,10 +150,10 @@ export default defineComponent({
   transform: translateY(0);
   transition-duration: .3s;
 }
-#input:focus + #placeholder
+.placeholderFocus
 {
-  font-size: 1.8vh;
-  transform: translateY(-4vh);
+  font-size: 1.8vh !important;
+  transform: translateY(-4vh) !important;
 }
 .inputError
 {
@@ -119,6 +163,10 @@ export default defineComponent({
 {
   border-color: #88cccc;
 }
+.inputPwd
+{
+  padding-right: 3vw;
+}
 .placeholderError
 {
   color: #F3263F;
@@ -126,5 +174,13 @@ export default defineComponent({
 .placeholderCorrect
 {
   color: #88cccc;
+}
+
+#showPwd
+{
+  z-index: 3;
+  position: absolute;
+  width: 2vw;
+  right: 1vw;
 }
 </style>

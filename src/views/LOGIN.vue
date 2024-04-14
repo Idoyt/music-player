@@ -1,34 +1,40 @@
 <script>
 import {defineComponent, ref} from 'vue';
-import GOOGLE_INPUT from '@/components/GOOGLE_INPUT.vue';
+import GoogleInput from '@/components/GOOGLE_INPUT.vue';
 
 import '@/utils/input_check';
 import {emailCheck, phoneCheck} from '@/utils/input_check';
+import axios from 'axios';
 
 export default defineComponent({
   name: 'loginPage',
   components: {
-    Google_Input: GOOGLE_INPUT,
+    GoogleInput,
   },
   setup() {
-    const text = ref('');
+    const account = ref('');
     const inputStatus = ref('Correct');
     const placeholder = '电子邮件地址或电话号码';
     const getInputValue = (data)=>{
-      text.value = data;
+      account.value = data;
     };
     const checkAccount = ()=>{
-      if (emailCheck(text.value) || phoneCheck(text.value)) {
+      if (emailCheck(account.value) || phoneCheck(account.value)) {
         console.log('nice');
         inputStatus.value = 'Correct';
+        axios.get(`http://localhost:8000/check_email/?email=${account.value}`)
+            .then((response) => {
+              if (response.data === account.value) {
+                console.log(response);
+              }
+            });
       } else inputStatus.value = 'Error';
     };
     return {
-      text,
       input_status: inputStatus,
       placeholder,
-      get_input_value: getInputValue,
-      check_account: checkAccount,
+      getInputValue,
+      checkAccount,
     };
   },
 });
@@ -37,10 +43,16 @@ export default defineComponent({
 <template>
   <div id="componentBody">
     <div id="login_area">
-      <div id="left_info">{{text}}</div>
+      <div id="left_info"></div>
       <div id="rightArea">
-        <Google_Input :placeholder=placeholder :status=input_status style="margin-top: 20%" @value="get_input_value"></Google_Input>
-        <button id="next_step" @click="check_account">下一步</button>
+        <slot name="inputAccount">
+          <GoogleInput :status=input_status placeholder="电子邮箱或手机号码" style="margin-top: 20%" @value="getInputValue"></GoogleInput>
+        </slot>
+        <slot name="inputPassword">
+          <GoogleInput :status=input_status placeholder="账号密码" style="margin-top: 20%" type="password" @value="getInputValue"></GoogleInput>
+        </slot>
+
+        <button id="next_step" @click="checkAccount">下一步</button>
       </div>
     </div>
   </div>
