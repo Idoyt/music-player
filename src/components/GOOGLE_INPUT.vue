@@ -17,37 +17,55 @@ export default defineComponent({
       // text, password
       default: 'text',
     },
+    checkMethod: {
+      type: Array,
+      // required: true,
+    },
+    checkTriggerTime: {
+      type: Object,
+      // input  submit
+      default: {method: 'input', trigger: 'none'},
+    },
   },
   setup(props) {
+    // param for main content
     const inputText = ref('');
-    const localStatus = ref(props.status);
+
+    // param for dom
     const domInput = ref(null);
     const domPlaceholder = ref(null);
+
+    // param for status
     const inputType = ref('text');
     const isPwd = ref(false);
     const showPwdStatus = ref('clos');
     const allowedType = ['text', 'password'];
+
+
     const imageSrc = computed(()=>{
       return 'http://101.201.66.67/static/icon/google_input/eye_' + showPwdStatus.value + '_gray.svg';
     });
 
+    // check input type is allowed or not, if not , change it to 'text' type
     inputType.value = allowedType.includes(props.type) ? props.type : 'text';
     isPwd.value = (inputType.value === 'password');
 
     const focus = ()=>{
       if (!domInput.value) return;
-      domInput.value.classList.add('input' + localStatus.value);
+      domInput.value.classList.add('input' + props.status);
       domInput.value.classList.add('inputFocus');
 
-      domPlaceholder.value.classList.add('placeholder' + localStatus.value);
+      domPlaceholder.value.classList.add('placeholder' + props.status);
       domPlaceholder.value.classList.add('placeholderFocus');
+      // console.log(domPlaceholder.value.classList);
+      console.log(props.status);
     };
     const blur = ()=>{
       if (inputText.value === '') {
-        domInput.value.classList.remove('input' + localStatus.value);
+        domInput.value.classList.remove('input' + props.status);
         domInput.value.classList.remove('inputFocus');
 
-        domPlaceholder.value.classList.remove('placeholder' + localStatus.value);
+        domPlaceholder.value.classList.remove('placeholder' + props.status);
         domPlaceholder.value.classList.remove('placeholderFocus');
         showPassword();
       } else focus();
@@ -56,11 +74,24 @@ export default defineComponent({
       showPwdStatus.value = showPwdStatus.value === 'clos' ? 'open' : 'clos';
       inputType.value = showPwdStatus.value === 'clos' ? 'password' : 'text';
     };
+
+    const checkWhileInput = ()=>{
+      console.log('checking on while');
+    };
+    const checkAfterInput = ()=>{
+      console.log('checking on after');
+    };
+    const checkMethodMap = {
+      input: ()=>checkWhileInput(),
+      submit: ()=>checkAfterInput(),
+    };
     onMounted(()=>{
       if (inputType.value === 'password') {
         if (!domInput.value) return;
         domInput.value.classList.add('inputPwd');
       }
+
+      // checkMethodMap[props.checkTriggerTime['method']];
     });
 
     return {
@@ -109,7 +140,8 @@ export default defineComponent({
   display: flex;
   align-items: center;
 
-  width: 20vw;
+  width: 100%;
+  height: 10vh;
 
   --input_border-width: 2px;
   --input-height: 8vh;
@@ -141,7 +173,6 @@ export default defineComponent({
   position: absolute;
   margin-left: calc(var(--input_border-width) + 1vw);
   padding: 0 1% 0 1%;
-  height: inherit;
   pointer-events: none;
   font-size: 2.5vh;
   background-color: white;
