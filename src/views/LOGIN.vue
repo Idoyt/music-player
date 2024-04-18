@@ -28,6 +28,7 @@ export default defineComponent({
         if (emailCheck(account.value) || phoneCheck(account.value)) {
           inputStatus.value = 'Correct';
 
+          // 这里的修改样式需要移到axios里
           document.getElementById('inputAccount').style.marginLeft = '-25vw';
           document.getElementById('inputPassword').style.marginLeft = '0';
           checkBtnTextRight.value = '登录';
@@ -49,7 +50,7 @@ export default defineComponent({
       }
     };
     const navigate = ()=>{
-      if (checkBtnTextRight.value === '创建账号') router.push('/register');
+      if (checkBtnTextLeft.value === '创建账号') router.push('/register');
       else {
         document.getElementById('inputAccount').style.marginLeft = '0';
         document.getElementById('inputPassword').style.marginLeft = '0';
