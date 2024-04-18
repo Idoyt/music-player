@@ -1,5 +1,5 @@
 <script>
-import {computed, defineComponent, onMounted, ref} from 'vue';
+import {computed, defineComponent, onMounted, ref, watch} from 'vue';
 
 export default defineComponent({
   name: 'Google_Input',
@@ -7,24 +7,52 @@ export default defineComponent({
     placeholder: {
       type: String,
       default: '输入内容',
+      validator: (value) => {
+        return value.length < 21;
+      },
     },
     status: {
       type: String,
       default: 'Correct',
+      validator: (value) => {
+        const allowedValue = ['Correct', 'Error'];
+        return allowedValue.includes(value);
+      },
     },
     type: {
       type: String,
       // text, password
       default: 'text',
+      validator: (value) => {
+        const allowedValue = ['text', 'password'];
+        return allowedValue.includes(value);
+      },
     },
     checkMethod: {
       type: Array,
       // required: true,
+      validator: (value) => {
+        if (value.length > 10) return false;
+        else {
+          value.forEach((item)=>{
+            if (typeof (item) !== 'function') return false;
+          });
+          return true;
+        }
+      },
     },
     checkTriggerTime: {
       type: Object,
-      // input  submit
-      default: {method: 'input', trigger: 'none'},
+      // {input, none}  {submit, chang this after submit finished} {none, none}
+      default: {time: 'none', trigger: 'none'},
+      validator: (value)=>{
+        if (!value) return false;
+        const allowedKeys = ['none', 'input', 'submit'];
+        const allowedObject = {none: ['none'], input: ['none'], submit: ['true', 'false']};
+        if (allowedKeys.includes(value['time'])) {
+          return allowedObject[value['time']].includes(value['trigger']);
+        } else return false;
+      },
     },
   },
   setup(props) {
@@ -40,7 +68,6 @@ export default defineComponent({
     const isPwd = ref(false);
     const showPwdStatus = ref('clos');
     const allowedType = ['text', 'password'];
-
 
     const imageSrc = computed(()=>{
       return 'http://101.201.66.67/static/icon/google_input/eye_' + showPwdStatus.value + '_gray.svg';
@@ -58,17 +85,15 @@ export default defineComponent({
       domPlaceholder.value.classList.add('placeholder' + props.status);
       domPlaceholder.value.classList.add('placeholderFocus');
       // console.log(domPlaceholder.value.classList);
-      console.log(props.status);
     };
     const blur = ()=>{
       if (inputText.value === '') {
-        domInput.value.classList.remove('input' + props.status);
-        domInput.value.classList.remove('inputFocus');
-
-        domPlaceholder.value.classList.remove('placeholder' + props.status);
         domPlaceholder.value.classList.remove('placeholderFocus');
         showPassword();
       } else focus();
+      domPlaceholder.value.classList.remove('placeholder' + props.status);
+      domInput.value.classList.remove('input' + props.status);
+      domInput.value.classList.remove('inputFocus');
     };
     const showPassword = ()=>{
       showPwdStatus.value = showPwdStatus.value === 'clos' ? 'open' : 'clos';
@@ -81,19 +106,29 @@ export default defineComponent({
     const checkAfterInput = ()=>{
       console.log('checking on after');
     };
-    const checkMethodMap = {
-      input: ()=>checkWhileInput(),
-      submit: ()=>checkAfterInput(),
-    };
     onMounted(()=>{
       if (inputType.value === 'password') {
         if (!domInput.value) return;
         domInput.value.classList.add('inputPwd');
       }
 
-      // checkMethodMap[props.checkTriggerTime['method']];
+      const checktTime = props.checkTriggerTime['time'];
+      if (checktTime == 'input') {
+        watch(inputText, ()=>{
+          props.checkMethod.forEach((item)=>{
+            console.log(item);
+          });
+        });
+      } else if (checktTime == 'submit') {
+        const checktTime = ref(props.checkTriggerTime['trigger']);
+        watch(checktTime, ()=>{
+          if (checktTime.value == 'true') {
+            console.log(props.checkMethod);
+            // props.checkMethod.forEach((item)=>item(inputText.value));
+          }
+        });
+      }
     });
-
     return {
       inputText,
       focus,
@@ -145,13 +180,14 @@ export default defineComponent({
 
   --input_border-width: 2px;
   --input-height: 8vh;
+  --input-width: 100%;
 }
 .input
 {
   z-index: 1;
   position: absolute;
   height: var(--input-height);
-  width: inherit;
+  width: var(--input-width);
 
   padding: 0;
   border-width: var(--input_border-width);
@@ -161,7 +197,7 @@ export default defineComponent({
   box-sizing: border-box;
   border-style: solid;
   border-radius: 1vh;
-  font-size: 2.5vh;
+  font-size: calc(2.5/8 * var(--input-height));
 }
 .inputFocus
 {
@@ -174,7 +210,7 @@ export default defineComponent({
   margin-left: calc(var(--input_border-width) + 1vw);
   padding: 0 1% 0 1%;
   pointer-events: none;
-  font-size: 2.5vh;
+  font-size: calc(2.5/8 * var(--input-height));
   background-color: white;
   white-space: nowrap;
 
@@ -183,7 +219,7 @@ export default defineComponent({
 }
 .placeholderFocus
 {
-  font-size: 1.8vh !important;
+  font-size: calc(1.8/8 * var(--input-height)) !important;
   transform: translateY(-4vh) !important;
 }
 .inputError

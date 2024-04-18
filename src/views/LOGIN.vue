@@ -23,14 +23,16 @@ export default defineComponent({
       account.value = data;
     };
     const checkMethod = [emailCheck, phoneCheck];
+    const checkMethodTrigger = ref({submit: 'false'});
+    // const checkResult = ref('');
     const checkAccount = ()=>{
       if (checkBtnTextRight.value === '下一步') {
+        checkMethodTrigger.value.submit = 'true';
         if (emailCheck(account.value) || phoneCheck(account.value)) {
           inputStatus.value = 'Correct';
 
           // 这里的修改样式需要移到axios里
           document.getElementById('inputAccount').style.marginLeft = '-25vw';
-          document.getElementById('inputPassword').style.marginLeft = '0';
           checkBtnTextRight.value = '登录';
           checkBtnTextLeft.value = '上一步';
 
@@ -42,7 +44,6 @@ export default defineComponent({
               });
         } else {
           inputStatus.value = 'Error';
-          console.log(inputStatus.value);
         }
       } else {
 
@@ -53,7 +54,6 @@ export default defineComponent({
       if (checkBtnTextLeft.value === '创建账号') router.push('/register');
       else {
         document.getElementById('inputAccount').style.marginLeft = '0';
-        document.getElementById('inputPassword').style.marginLeft = '0';
         checkBtnTextRight.value = '下一步';
         checkBtnTextLeft.value = '创建账号';
         account.value = '';
@@ -75,8 +75,8 @@ export default defineComponent({
 
 <template>
   <div id="componentBody">
-    <div id="login_area">
-      <div id="left_info"></div>
+    <div id="tableArea">
+      <div id="leftArea"></div>
       <div id="rightArea">
         <div id="inputArea">
             <div id="inputAccount" class="inputUnite">
@@ -108,7 +108,7 @@ export default defineComponent({
   display: flex;
   justify-content: center;
 }
-#login_area
+#tableArea
 {
   position: relative;
   display: flex;
@@ -118,7 +118,7 @@ export default defineComponent({
   background-color: white;
   border-radius: 5vh;
 }
-#left_info
+#leftArea
 {
   width: 30vw;
   height: inherit;
@@ -203,10 +203,6 @@ export default defineComponent({
 {
   transition: margin-left .3s;
   width: 25vw;
-}
-.checkSuccess
-{
-  margin-left: -25vw;
 }
 
 </style>
