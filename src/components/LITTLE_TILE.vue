@@ -9,12 +9,22 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    height: {
+      type: String,
+      default: '100%',
+    },
+    width: {
+      type: String,
+      default: '100%',
+    },
+  },
+  setup(props) {
   },
 });
 </script>
 
 <template>
-  <div :style="indent" class="littleTile">
+  <div ref="domTile" :style="indent" class="littleTile">
     <span class="tileFilter"></span>
     <span class="playBtn" @click="start_play"/>
     <span v-if="showPlayVolume" class="playVolume">114514</span>
@@ -29,20 +39,16 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 3vh;
-  margin-left: 2vw;
   border-radius: 1.2vh;
-  height: 26vh;
-  width: 26vh;
+
+  height: 100%;
+  width: 100%;
+
   background-image: url("http://101.201.66.67/assets/images/album/IMG-00001.jpg");
   background-size: cover;
   transition-duration: .3s;
 
   cursor: pointer;
-}
-.littleTile:hover
-{
-  transform: scale(1.08);
 }
 .littleTile:hover > .playBtn
 {
@@ -74,8 +80,8 @@ export default defineComponent({
   display: none;
   z-index: 2;
 
-  height: 8.67vh;
-  width: 4vw;
+  height: 40%;
+  width: 40%;
 
   background-image: url("http://101.201.66.67/static/icon/little_tile/play_white.svg");
   background-position: center;

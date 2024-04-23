@@ -3,6 +3,7 @@ import {computed, defineComponent, onBeforeMount, onBeforeUnmount, ref, watch} f
 import audioPlayBar from '@/components/AUDIO_PLAY_BAR.vue';
 import {getAudioInfo, getCurrentTime, setCurrentTime} from '@/utils/music_play_bus/private';
 import {useStore} from 'vuex';
+import {useRouter} from 'vue-router';
 
 export default defineComponent({
   name: 'audioPlay',
@@ -16,6 +17,11 @@ export default defineComponent({
     const nowLine = computed(()=>audioInfo.value.nowLine);
     let lastLine = -1;
     const store = useStore();
+    const router = useRouter();
+
+    const backToHome = ()=> {
+      router.push('/');
+    };
 
     onBeforeMount(()=>{
       setCurrentTime('currentTime', store.state['audioModule/audioCurrentTime']);
@@ -40,13 +46,19 @@ export default defineComponent({
       lastLine = nowLine.value;
     });
 
-    return {finishLoadLyric, domLyric, audioInfo};
+    return {
+      finishLoadLyric,
+      domLyric,
+      audioInfo,
+      backToHome,
+    };
   },
 });
 </script>
 
 <template>
   <div id="componentBody">
+    <div id="backToHome" @click="backToHome"></div>
     <div id="background">
       <div id="filter"></div>
       <img id="background_image" alt="background" src="http://101.201.66.67/assets/images/album/IMG-00001.jpg">
@@ -62,11 +74,6 @@ export default defineComponent({
               <p id="album">专辑： {{audioInfo.lyric.al}}</p>
             </div>
 
-          </div>
-          <div v-else>
-            <span>loading</span>
-            <span>loading</span>
-            <span>loading</span>
           </div>
         </div>
 
@@ -92,8 +99,23 @@ export default defineComponent({
 <style scoped>
 #componentBody
 {
+  position: relative;
   height: 100vh;
   width: 100vw;
+}
+#backToHome
+{
+  position: absolute;
+  height: 4vh;
+  width: 2vw;
+  background-image: url("http://101.201.66.67/static/icon/detail_page/down_white.svg");
+  background-size: cover;
+  top: 1vh;
+  left: 1vw;
+}
+#backToHome:hover
+{
+  background-image: url("http://101.201.66.67/static/icon/detail_page/down_red.svg");
 }
 #filter
 {

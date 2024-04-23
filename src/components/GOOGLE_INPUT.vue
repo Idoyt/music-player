@@ -1,5 +1,5 @@
 <script>
-import {computed, defineComponent, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, onMounted, ref} from 'vue';
 
 export default defineComponent({
   name: 'Google_Input',
@@ -28,31 +28,9 @@ export default defineComponent({
         return allowedValue.includes(value);
       },
     },
-    checkMethod: {
-      type: Array,
-      // required: true,
-      validator: (value) => {
-        if (value.length > 10) return false;
-        else {
-          value.forEach((item)=>{
-            if (typeof (item) !== 'function') return false;
-          });
-          return true;
-        }
-      },
-    },
-    checkTriggerTime: {
-      type: Object,
-      // {input, none}  {submit, chang this after submit finished} {none, none}
-      default: {time: 'none', trigger: 'none'},
-      validator: (value)=>{
-        if (!value) return false;
-        const allowedKeys = ['none', 'input', 'submit'];
-        const allowedObject = {none: ['none'], input: ['none'], submit: ['true', 'false']};
-        if (allowedKeys.includes(value['time'])) {
-          return allowedObject[value['time']].includes(value['trigger']);
-        } else return false;
-      },
+    needSelect: {
+      type: Boolean,
+      default: true,
     },
   },
   setup(props) {
@@ -85,48 +63,29 @@ export default defineComponent({
       domPlaceholder.value.classList.add('placeholder' + props.status);
       domPlaceholder.value.classList.add('placeholderFocus');
       // console.log(domPlaceholder.value.classList);
+
+      if (props.needSelect && inputText.value!=='') domInput.value.select();
     };
     const blur = ()=>{
       if (inputText.value === '') {
         domPlaceholder.value.classList.remove('placeholderFocus');
         showPassword();
       } else focus();
-      domPlaceholder.value.classList.remove('placeholder' + props.status);
-      domInput.value.classList.remove('input' + props.status);
-      domInput.value.classList.remove('inputFocus');
+      if (domPlaceholder.value !== null && domInput.value !== null) {
+        domPlaceholder.value.classList.remove('placeholder' + props.status);
+        domInput.value.classList.remove('input' + props.status);
+        domInput.value.classList.remove('inputFocus');
+      }
     };
     const showPassword = ()=>{
       showPwdStatus.value = showPwdStatus.value === 'clos' ? 'open' : 'clos';
       inputType.value = showPwdStatus.value === 'clos' ? 'password' : 'text';
     };
 
-    const checkWhileInput = ()=>{
-      console.log('checking on while');
-    };
-    const checkAfterInput = ()=>{
-      console.log('checking on after');
-    };
     onMounted(()=>{
       if (inputType.value === 'password') {
         if (!domInput.value) return;
         domInput.value.classList.add('inputPwd');
-      }
-
-      const checktTime = props.checkTriggerTime['time'];
-      if (checktTime == 'input') {
-        watch(inputText, ()=>{
-          props.checkMethod.forEach((item)=>{
-            console.log(item);
-          });
-        });
-      } else if (checktTime == 'submit') {
-        const checktTime = ref(props.checkTriggerTime['trigger']);
-        watch(checktTime, ()=>{
-          if (checktTime.value == 'true') {
-            console.log(props.checkMethod);
-            // props.checkMethod.forEach((item)=>item(inputText.value));
-          }
-        });
       }
     });
     return {

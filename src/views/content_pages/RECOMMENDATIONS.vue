@@ -22,30 +22,30 @@ export default defineComponent({
       <span class="recommend_title">Hi {{uid}},今日为你推荐</span>
       <div style="display: flex;padding-right: 1vw">
         <div id="infinite_songs"  class="big_tile"></div>
-        <LITTLE_TILE :showPlayVolume="false"></LITTLE_TILE>
-        <LITTLE_TILE :showPlayVolume="false"></LITTLE_TILE>
-        <LITTLE_TILE :showPlayVolume="false"></LITTLE_TILE>
-        <LITTLE_TILE :showPlayVolume="false"></LITTLE_TILE>
+        <LITTLE_TILE :showPlayVolume="false" class="tileHover"></LITTLE_TILE>
+        <LITTLE_TILE :showPlayVolume="false" class="tileHover"></LITTLE_TILE>
+        <LITTLE_TILE :showPlayVolume="false" class="tileHover"></LITTLE_TILE>
+        <LITTLE_TILE :showPlayVolume="false" class="tileHover"></LITTLE_TILE>
       </div>
     </div>
     <div id="single" class="recommend_unit">
       <span class="recommend_title">推荐歌单</span>
       <div style="display: flex;padding-right: 1vw">
-        <LITTLE_TILE :style="indent"></LITTLE_TILE>
-        <LITTLE_TILE></LITTLE_TILE>
-        <LITTLE_TILE></LITTLE_TILE>
-        <LITTLE_TILE></LITTLE_TILE>
-        <LITTLE_TILE></LITTLE_TILE>
-        <LITTLE_TILE></LITTLE_TILE>
+        <LITTLE_TILE :style="indent" class="tileHover"></LITTLE_TILE>
+        <LITTLE_TILE class="tileHover"></LITTLE_TILE>
+        <LITTLE_TILE class="tileHover"></LITTLE_TILE>
+        <LITTLE_TILE class="tileHover"></LITTLE_TILE>
+        <LITTLE_TILE class="tileHover"></LITTLE_TILE>
+        <LITTLE_TILE class="tileHover"></LITTLE_TILE>
       </div>
 
       <div style="display: flex;padding-right: 1vw;margin-top: 5vh">
-        <LITTLE_TILE :style="indent"></LITTLE_TILE>
-        <LITTLE_TILE></LITTLE_TILE>
-        <LITTLE_TILE></LITTLE_TILE>
-        <LITTLE_TILE></LITTLE_TILE>
-        <LITTLE_TILE></LITTLE_TILE>
-        <LITTLE_TILE></LITTLE_TILE>
+        <LITTLE_TILE :style="indent" class="tileHover"></LITTLE_TILE>
+        <LITTLE_TILE class="tileHover"></LITTLE_TILE>
+        <LITTLE_TILE class="tileHover"></LITTLE_TILE>
+        <LITTLE_TILE class="tileHover"></LITTLE_TILE>
+        <LITTLE_TILE class="tileHover"></LITTLE_TILE>
+        <LITTLE_TILE class="tileHover"></LITTLE_TILE>
       </div>
     </div>
     <div id="list" class="recommend_unit">
@@ -86,6 +86,17 @@ export default defineComponent({
 }
 
 .big_tile:hover:hover
+{
+  transform: scale(1.08);
+}
+.tileHover
+{
+  height: 26vh;
+  width: 26vh;
+  margin-top: 2vh;
+  margin-left: 3vw;
+}
+.tileHover:hover
 {
   transform: scale(1.08);
 }

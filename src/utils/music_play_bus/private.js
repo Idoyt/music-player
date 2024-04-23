@@ -184,3 +184,11 @@ function parseLyric(data) {
 export function getCurrentTime() {
   return domAudio.currentTime;
 }
+
+/**
+ * get audio source
+ * @return {Object} HTMLAudioElement
+ */
+export function getAudioDom() {
+  return domAudio;
+}

@@ -1,11 +1,12 @@
 <script>
-import {defineComponent, ref} from 'vue';
+import {defineComponent, onMounted, ref, watch} from 'vue';
 import GoogleInput from '@/components/GOOGLE_INPUT.vue';
 
 import '@/utils/input_check';
 import {emailCheck, phoneCheck} from '@/utils/input_check';
 import axios from 'axios';
 import {useRouter} from 'vue-router';
+import {useStore} from 'vuex';
 
 export default defineComponent({
   name: 'loginPage',
@@ -14,15 +15,26 @@ export default defineComponent({
   },
   setup() {
     const account = ref('');
+    const password = ref('');
     const checkBtnTextRight = ref('下一步');
     const checkBtnTextLeft = ref('创建账号');
-    const router = useRouter();
     const inputStatus = ref('Correct');
     const placeholder = '电子邮件地址或电话号码';
-    const getInputValue = (data)=>{
+    const errorMessage = ref('');
+    const loginStatus = ref(false);
+    const needSelect = ref(false);
+
+    const domAccountError = ref(null);
+    const domPasswordError = ref(null);
+    const router = useRouter();
+    const store = useStore();
+
+    const getAccount = (data)=>{
       account.value = data;
     };
-    const checkMethod = [emailCheck, phoneCheck];
+    const getPassword = (data)=>{
+      password.value = data;
+    };
     const checkMethodTrigger = ref({submit: 'false'});
     // const checkResult = ref('');
     const checkAccount = ()=>{
@@ -31,23 +43,31 @@ export default defineComponent({
         if (emailCheck(account.value) || phoneCheck(account.value)) {
           inputStatus.value = 'Correct';
 
-          // 这里的修改样式需要移到axios里
-          document.getElementById('inputAccount').style.marginLeft = '-25vw';
-          checkBtnTextRight.value = '登录';
-          checkBtnTextLeft.value = '上一步';
-
-          axios.get(`http://localhost:8000/check_email/?email=${account.value}`)
+          axios.post(`http://localhost:8000/check_email/`, {'email': account.value})
               .then((response) => {
-                if (response.data === account.value) {
-                  console.log(response);
+                if (response.data.status === 'success') {
+                  document.getElementById('inputAccount').style.marginLeft = '-25vw';
+                  checkBtnTextRight.value = '登录';
+                  checkBtnTextLeft.value = '上一步';
+                } else {
+                  errorMessage.value = response.data.message;
                 }
               });
         } else {
           inputStatus.value = 'Error';
         }
       } else {
-
         // check password
+        axios.post('http://localhost:8000/login/', {'email': account.value, 'password': password.value})
+            .then((response) => {
+              console.log(response);
+              if (response.data.status === 'success') {
+                router.push('/');
+                store.commit('audioModule/updateLoginStatus', false);
+              } else {
+
+              }
+            });
       }
     };
     const navigate = ()=>{
@@ -56,18 +76,37 @@ export default defineComponent({
         document.getElementById('inputAccount').style.marginLeft = '0';
         checkBtnTextRight.value = '下一步';
         checkBtnTextLeft.value = '创建账号';
-        account.value = '';
       }
     };
+
+    onMounted(()=>{
+      domAccountError.value.style.display = 'none';
+      watch(errorMessage, (value)=>{
+        if (!loginStatus.value && value !== '') {
+          needSelect.value = true;
+          domAccountError.value.style.display = 'block';
+        }
+      });
+      watch(account, (value)=>{
+        if (value === '') {
+          needSelect.value = false;
+          domAccountError.value.style.display = 'none';
+        }
+      });
+    });
     return {
       inputStatus,
       placeholder,
-      getInputValue,
+      getAccount,
+      getPassword,
       checkAccount,
-      checkMethod,
       navigate,
       checkBtnTextRight,
       checkBtnTextLeft,
+      errorMessage,
+      needSelect,
+
+      domAccountError,
     };
   },
 });
@@ -80,11 +119,13 @@ export default defineComponent({
       <div id="rightArea">
         <div id="inputArea">
             <div id="inputAccount" class="inputUnite">
-              <GoogleInput :status=inputStatus placeholder="电子邮箱或手机号码" @value="getInputValue"></GoogleInput>
+              <GoogleInput :need-select="needSelect" :status="inputStatus" placeholder="电子邮箱或手机号码" @value="getAccount"></GoogleInput>
+              <div ref="domAccountError" style="color: #f3263f">错误: {{errorMessage}}</div>
               <span>忘记账户?</span>
             </div>
             <div id="inputPassword" class="inputUnite">
-              <GoogleInput :status=inputStatus placeholder="账号密码" type="password" @value="getInputValue"></GoogleInput>
+              <GoogleInput :status="inputStatus" placeholder="账号密码" type="password" @value="getPassword"></GoogleInput>
+              <div ref="domPasswordError" style="color: #f3263f">错误: {{errorMessage}}</div>
               <span>忘记密码?</span>
             </div>
         </div>

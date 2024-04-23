@@ -5,6 +5,7 @@ const audioModule = {
   state: {
     audioCurrentTime: -1,
     audioNowline: -1,
+    loginStatus: false,
   },
   mutations: {
     updateAudioCurrentTime(state, domCurrentTime) {
@@ -12,6 +13,9 @@ const audioModule = {
     },
     updateAudioNowLine(state, nowLine) {
       state.audioNowline = nowLine;
+    },
+    updateLoginStatus(state, status) {
+      state.loginStatus = status;
     },
   },
   actions: {

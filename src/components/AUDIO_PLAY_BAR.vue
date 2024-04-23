@@ -1,6 +1,13 @@
 <script>
-import {computed, defineComponent, ref, watch} from 'vue';
-import {getAudioInfo, getAudioList, setCurrentTime, togglePlayStatus} from '@/utils/music_play_bus/private';
+import {computed, defineComponent, onMounted, ref, watch} from 'vue';
+import FFT from 'fft-js';
+import {
+  getAudioDom,
+  getAudioInfo,
+  getAudioList,
+  setCurrentTime,
+  togglePlayStatus,
+} from '@/utils/music_play_bus/private';
 
 export default defineComponent({
   name: 'Music_Play_Bar',
@@ -21,6 +28,11 @@ export default defineComponent({
     // eslint-disable-next-line max-len
     const busRatio = computed(()=>(audioInfo.value.currentTime.value / audioInfo.value.duration.value * 100).toString() + '%');
     const localRatio = ref('0%');
+
+    const toggleAudioPlayStatus = ()=>{
+      togglePlayStatus();
+      draw();
+    };
 
     const clickProcess = (event)=>{
       setCurrentTime('ratio', parseFloat((event.clientX / document.body.clientWidth).toFixed(2)));
@@ -50,15 +62,51 @@ export default defineComponent({
       if (!dragging.value) localRatio.value = value;
     });
 
+    let ctx = null;
+    let dataArray = null;
+    let fft = null;
+    let bufferLength = null;
+    let analyser = null;
+    const domCanvas = document.getElementById('frequencyPlot');
+
+    onMounted(()=>{
+      // const domCanvas = ref(null);
+      ctx = domCanvas.getContext('2d');
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioContext.createAnalyser();
+      analyser.fftSize = 2048;
+      bufferLength = analyser.frequencyBinCount;
+      dataArray = new Uint8Array(bufferLength);
+
+      fft = new FFT(bufferLength);
+      const audioElement = getAudioDom();
+      const source = audioContext.createMediaElementSource(audioElement);
+      source.connect(analyser);
+      analyser.connect(audioContext.destination);
+    });
+    const draw = ()=>{
+      requestAnimationFrame(draw);
+      analyser.getByteFrequencyData(dataArray);
+      fft.forward(dataArray);
+      ctx.clearRect(0, 0, domCanvas.width, domCanvas.height);
+      for (let i = 0; i < bufferLength; i++) {
+        const x = i;
+        const y = domCanvas.height - dataArray[i] * domCanvas.height / 255;
+        ctx.fillRect(x, y, 1, domCanvas.height - y);
+      }
+    };
+
+
     return {
       playIconUrl,
       audioInfo,
       audioList,
       localRatio,
 
-      togglePlayStatus,
+      toggleAudioPlayStatus,
       clickProcess,
       mouseDown,
+      domCanvas,
     };
   },
 });
@@ -66,6 +114,10 @@ export default defineComponent({
 
 <template>
   <div id="audioPlayBarBody">
+    <div id="fftVisibleArea">
+      <canvas id="frequencyPlot" ref="domCanvas"></canvas>
+    </div>
+
     <div id="processBox" @click="clickProcess" @mousedown="mouseDown">
       <div id="processBar">
         <div id="processRedBar" :style="{width: localRatio}">
@@ -94,15 +146,14 @@ export default defineComponent({
         <span v-show=isDetail id="timestamp" style="color: white">
         {{audioInfo.currentTime.min}}:{{audioInfo.currentTime.sec}} /
         {{audioInfo.duration.min}}:{{audioInfo.duration.sec}}
-      </span>
-
+        </span>
       </div>
 
 
       <div id="middleArea">
         <span id="play_method"></span>
         <span id="prevBigBtn"></span>
-        <div id="playBigBtn" :style="{'background-image':`url('${playIconUrl[audioInfo.status]}')`}" @click="togglePlayStatus">
+        <div id="playBigBtn" :style="{'background-image':`url('${playIconUrl[audioInfo.status]}')`}" @click="toggleAudioPlayStatus">
 
         </div>
         <span id="nxtBigBtn"></span>
@@ -127,6 +178,7 @@ export default defineComponent({
 <style scoped>
 #playBarBody
 {
+  position: relative;
   z-index: 0;
   display: flex;
   width: 100%;
@@ -134,6 +186,27 @@ export default defineComponent({
   justify-content: space-between;
 
   --bottom_bar-height: 10vh;
+}
+/* fft音频可视化 */
+#fftVisibleArea
+{
+
+  position: absolute;
+  z-index: 0;
+  top: -9vh;
+
+  display: flex;
+  justify-content: center;
+
+  height: 10vh;
+  width: 100%;
+}
+#frequencyPlot
+{
+  height: inherit;
+  width: 50%;
+
+  background-color: black;
 }
 
 /* 顶部进度条 */
