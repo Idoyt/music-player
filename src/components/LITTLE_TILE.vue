@@ -44,7 +44,7 @@ export default defineComponent({
   height: 100%;
   width: 100%;
 
-  background-image: url("http://101.201.66.67/assets/images/album/IMG-00001.jpg");
+  background-image: url("http://123.57.7.117/assets/images/album/IMG-00001.jpg");
   background-size: cover;
   transition-duration: .3s;
 
@@ -83,7 +83,7 @@ export default defineComponent({
   height: 40%;
   width: 40%;
 
-  background-image: url("http://101.201.66.67/static/icon/little_tile/play_white.svg");
+  background-image: url("http://123.57.7.117/static/icon/little_tile/play_white.svg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
@@ -92,7 +92,7 @@ export default defineComponent({
 }
 .playBtn:hover
 {
-  background-image: url("http://101.201.66.67/static/icon/little_tile/play_red.svg");
+  background-image: url("http://123.57.7.117/static/icon/little_tile/play_red.svg");
 }
 
 .playVolume

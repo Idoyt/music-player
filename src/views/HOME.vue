@@ -1,5 +1,5 @@
 <script>
-import {defineComponent, getCurrentInstance, onBeforeUnmount, ref} from 'vue';
+import {defineComponent, getCurrentInstance, onBeforeMount, onBeforeUnmount, ref} from 'vue';
 import audioPlayBar from '@/components/AUDIO_PLAY_BAR.vue';
 import menuBar from '@/components/MENU_BAR.vue';
 import topBar from '@/components/TOP_BAR.vue';
@@ -12,7 +12,8 @@ import audioCollected from '@/views/content_pages/COLLECTED_MUSIC.vue';
 import usersFollowed from '@/views/content_pages/FOLLOWED_USERS.vue';
 import recordPlayed from '@/views/content_pages/AUDIO_RECORD.vue';
 import {useStore} from 'vuex';
-import {getCurrentTime} from '@/utils/music_play_bus/private';
+import {getCurrentTime} from '@/utils/music_play_bus';
+import {useRouter} from 'vue-router';
 
 
 export default defineComponent({
@@ -43,6 +44,13 @@ export default defineComponent({
     onBeforeUnmount(()=>{
       const store = useStore();
       store.commit('audioModule/updateAudioCurrentTime', getCurrentTime());
+    });
+    onBeforeMount(()=>{
+      const store = useStore();
+      const router = useRouter();
+      if (store.state.audioModule.loginStatus === false) {
+        router.push('/login');
+      }
     });
 
     return {
@@ -75,9 +83,10 @@ export default defineComponent({
 </template>
 
 <style scoped>
+
 @font-face {
   font-family: "miku_font";
-  src: url("http://101.201.66.67/static/font/zaozigongfangziti.otf");
+  src: url("http://123.57.7.117/static/font/zaozigongfangziti.otf");
 }
 #appBody
 {

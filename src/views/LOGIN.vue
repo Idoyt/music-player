@@ -7,6 +7,7 @@ import {emailCheck, phoneCheck} from '@/utils/input_check';
 import axios from 'axios';
 import {useRouter} from 'vue-router';
 import {useStore} from 'vuex';
+import {API_BASE_URL} from '@/assets/constants';
 
 export default defineComponent({
   name: 'loginPage',
@@ -18,10 +19,11 @@ export default defineComponent({
     const password = ref('');
     const checkBtnTextRight = ref('下一步');
     const checkBtnTextLeft = ref('创建账号');
-    const inputStatus = ref('Correct');
+    const accountInputState = ref('Correct');
     const placeholder = '电子邮件地址或电话号码';
-    const errorMessage = ref('');
-    const loginStatus = ref(false);
+    const accountErrorMessage = ref('');
+    const passwordErrorMessage = ref('');
+    const loginState = ref(false);
     const needSelect = ref(false);
 
     const domAccountError = ref(null);
@@ -41,31 +43,32 @@ export default defineComponent({
       if (checkBtnTextRight.value === '下一步') {
         checkMethodTrigger.value.submit = 'true';
         if (emailCheck(account.value) || phoneCheck(account.value)) {
-          inputStatus.value = 'Correct';
+          accountInputState.value = 'Correct';
 
-          axios.post(`http://localhost:8000/check_email/`, {'email': account.value})
+          axios.post(API_BASE_URL + `/check_email/`, {'email': account.value})
               .then((response) => {
-                if (response.data.status === 'success') {
+                console.log(response);
+                if (response.data.state === 'success') {
                   document.getElementById('inputAccount').style.marginLeft = '-25vw';
                   checkBtnTextRight.value = '登录';
                   checkBtnTextLeft.value = '上一步';
+                  needSelect.value = false;
                 } else {
-                  errorMessage.value = response.data.message;
+                  accountErrorMessage.value = response.data.message;
                 }
               });
         } else {
-          inputStatus.value = 'Error';
+          accountInputState.value = 'Error';
         }
       } else {
         // check password
-        axios.post('http://localhost:8000/login/', {'email': account.value, 'password': password.value})
+        axios.post(API_BASE_URL + '/login/', {'email': account.value, 'password': password.value})
             .then((response) => {
-              console.log(response);
-              if (response.data.status === 'success') {
+              if (response.data.state === 'success') {
                 router.push('/');
-                store.commit('audioModule/updateLoginStatus', false);
+                store.commit('audioModule/updateLoginState', true);
               } else {
-
+                passwordErrorMessage.value = response.data.message;
               }
             });
       }
@@ -76,13 +79,14 @@ export default defineComponent({
         document.getElementById('inputAccount').style.marginLeft = '0';
         checkBtnTextRight.value = '下一步';
         checkBtnTextLeft.value = '创建账号';
+        needSelect.value = false;
       }
     };
 
     onMounted(()=>{
       domAccountError.value.style.display = 'none';
-      watch(errorMessage, (value)=>{
-        if (!loginStatus.value && value !== '') {
+      watch(accountErrorMessage, (value)=>{
+        if (!loginState.value && value !== '') {
           needSelect.value = true;
           domAccountError.value.style.display = 'block';
         }
@@ -93,9 +97,23 @@ export default defineComponent({
           domAccountError.value.style.display = 'none';
         }
       });
+
+      domPasswordError.value.style.display = 'none';
+      watch(passwordErrorMessage, (value)=>{
+        if (!loginState.value && value !== '') {
+          needSelect.value = true;
+          domPasswordError.value.style.display = 'block';
+        }
+      });
+      watch(password, (value)=>{
+        if (value === '') {
+          needSelect.value = false;
+          domPasswordError.value.style.display = 'none';
+        }
+      });
     });
     return {
-      inputStatus,
+      accountInputState,
       placeholder,
       getAccount,
       getPassword,
@@ -103,10 +121,12 @@ export default defineComponent({
       navigate,
       checkBtnTextRight,
       checkBtnTextLeft,
-      errorMessage,
+      accountErrorMessage,
+      passwordErrorMessage,
       needSelect,
 
       domAccountError,
+      domPasswordError,
     };
   },
 });
@@ -119,13 +139,13 @@ export default defineComponent({
       <div id="rightArea">
         <div id="inputArea">
             <div id="inputAccount" class="inputUnite">
-              <GoogleInput :need-select="needSelect" :status="inputStatus" placeholder="电子邮箱或手机号码" @value="getAccount"></GoogleInput>
-              <div ref="domAccountError" style="color: #f3263f">错误: {{errorMessage}}</div>
+              <GoogleInput :need-select="needSelect" :state="accountInputState" placeholder="电子邮箱或手机号码" @value="getAccount"></GoogleInput>
+              <div ref="domAccountError" style="color: #f3263f">错误: {{accountErrorMessage}}</div>
               <span>忘记账户?</span>
             </div>
             <div id="inputPassword" class="inputUnite">
-              <GoogleInput :status="inputStatus" placeholder="账号密码" type="password" @value="getPassword"></GoogleInput>
-              <div ref="domPasswordError" style="color: #f3263f">错误: {{errorMessage}}</div>
+              <GoogleInput placeholder="账号密码" type="password" @value="getPassword"></GoogleInput>
+              <div ref="domPasswordError" style="color: #f3263f">错误: {{passwordErrorMessage}}</div>
               <span>忘记密码?</span>
             </div>
         </div>

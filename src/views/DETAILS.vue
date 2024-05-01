@@ -1,7 +1,7 @@
 <script>
 import {computed, defineComponent, onBeforeMount, onBeforeUnmount, ref, watch} from 'vue';
 import audioPlayBar from '@/components/AUDIO_PLAY_BAR.vue';
-import {getAudioInfo, getCurrentTime, setCurrentTime} from '@/utils/music_play_bus/private';
+import {getAudioInfo, getCurrentTime, setCurrentTime} from '@/utils/music_play_bus';
 import {useStore} from 'vuex';
 import {useRouter} from 'vue-router';
 
@@ -61,7 +61,7 @@ export default defineComponent({
     <div id="backToHome" @click="backToHome"></div>
     <div id="background">
       <div id="filter"></div>
-      <img id="background_image" alt="background" src="http://101.201.66.67/assets/images/album/IMG-00001.jpg">
+      <img id="background_image" alt="background" src="http://123.57.7.117/assets/images/album/IMG-00001.jpg">
     </div>
     <div id="mainContent">
       <div id="albumCover"></div>
@@ -108,14 +108,14 @@ export default defineComponent({
   position: absolute;
   height: 4vh;
   width: 2vw;
-  background-image: url("http://101.201.66.67/static/icon/detail_page/down_white.svg");
+  background-image: url("http://123.57.7.117/static/icon/detail_page/down_white.svg");
   background-size: cover;
   top: 1vh;
   left: 1vw;
 }
 #backToHome:hover
 {
-  background-image: url("http://101.201.66.67/static/icon/detail_page/down_red.svg");
+  background-image: url("http://123.57.7.117/static/icon/detail_page/down_red.svg");
 }
 #filter
 {
@@ -163,7 +163,7 @@ export default defineComponent({
 {
   height: 50vh;
   width: 50vh;
-  background-image: url("http://101.201.66.67/assets/images/album/IMG-00001.jpg");
+  background-image: url("http://123.57.7.117/assets/images/album/IMG-00001.jpg");
   background-size: cover;
 }
 #lyricDisplayArea

@@ -1,13 +1,7 @@
 <script>
-import {computed, defineComponent, onMounted, ref, watch} from 'vue';
-import FFT from 'fft-js';
-import {
-  getAudioDom,
-  getAudioInfo,
-  getAudioList,
-  setCurrentTime,
-  togglePlayStatus,
-} from '@/utils/music_play_bus/private';
+import {computed, defineComponent, ref, watch} from 'vue';
+import {getAudioInfo, getAudioList, setCurrentTime, togglePlayStatus} from '@/utils/music_play_bus';
+import {STATIC_BASE_URL} from '@/assets/constants';
 
 export default defineComponent({
   name: 'Music_Play_Bar',
@@ -18,20 +12,23 @@ export default defineComponent({
     },
   },
   setup() {
-    const playIconUrl = ref(['http://101.201.66.67/static/icon/play_bar/play.svg', 'http://101.201.66.67/static/icon/play_bar/pause.svg']);
-
+    const playIconUrl = ref([STATIC_BASE_URL + '/static/icon/play_bar/play.svg', STATIC_BASE_URL + '/static/icon/play_bar/pause.svg']);
     const audioInfo = computed(()=> getAudioInfo());
     const audioList = computed(()=> getAudioList());
     const dragging = ref(false);
 
 
-    // eslint-disable-next-line max-len
+    const toggle = ()=>{
+      return togglePlayStatus();
+    };
+
+
     const busRatio = computed(()=>(audioInfo.value.currentTime.value / audioInfo.value.duration.value * 100).toString() + '%');
     const localRatio = ref('0%');
 
     const toggleAudioPlayStatus = ()=>{
-      togglePlayStatus();
-      draw();
+      toggle();
+      // if (toggle() || renderFrame.value!==null) renderFrame.value;
     };
 
     const clickProcess = (event)=>{
@@ -62,40 +59,6 @@ export default defineComponent({
       if (!dragging.value) localRatio.value = value;
     });
 
-    let ctx = null;
-    let dataArray = null;
-    let fft = null;
-    let bufferLength = null;
-    let analyser = null;
-    const domCanvas = document.getElementById('frequencyPlot');
-
-    onMounted(()=>{
-      // const domCanvas = ref(null);
-      ctx = domCanvas.getContext('2d');
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      analyser = audioContext.createAnalyser();
-      analyser.fftSize = 2048;
-      bufferLength = analyser.frequencyBinCount;
-      dataArray = new Uint8Array(bufferLength);
-
-      fft = new FFT(bufferLength);
-      const audioElement = getAudioDom();
-      const source = audioContext.createMediaElementSource(audioElement);
-      source.connect(analyser);
-      analyser.connect(audioContext.destination);
-    });
-    const draw = ()=>{
-      requestAnimationFrame(draw);
-      analyser.getByteFrequencyData(dataArray);
-      fft.forward(dataArray);
-      ctx.clearRect(0, 0, domCanvas.width, domCanvas.height);
-      for (let i = 0; i < bufferLength; i++) {
-        const x = i;
-        const y = domCanvas.height - dataArray[i] * domCanvas.height / 255;
-        ctx.fillRect(x, y, 1, domCanvas.height - y);
-      }
-    };
-
 
     return {
       playIconUrl,
@@ -106,7 +69,7 @@ export default defineComponent({
       toggleAudioPlayStatus,
       clickProcess,
       mouseDown,
-      domCanvas,
+      // domCanvas
     };
   },
 });
@@ -114,8 +77,8 @@ export default defineComponent({
 
 <template>
   <div id="audioPlayBarBody">
-    <div id="fftVisibleArea">
-      <canvas id="frequencyPlot" ref="domCanvas"></canvas>
+    <div v-show="isDetail" id="fftVisibleArea">
+      <canvas id="frequencyPlot" ref="canvasRef"></canvas>
     </div>
 
     <div id="processBox" @click="clickProcess" @mousedown="mouseDown">
@@ -206,7 +169,7 @@ export default defineComponent({
   height: inherit;
   width: 50%;
 
-  background-color: black;
+  background-color: white;
 }
 
 /* 顶部进度条 */
@@ -268,7 +231,7 @@ export default defineComponent({
   width: 7vh;
   border-radius: 1vh;
 
-  background-image: url("http://101.201.66.67/assets/images/album/IMG-00001.jpg");
+  background-image: url("http://123.57.7.117/assets/images/album/IMG-00001.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -286,7 +249,7 @@ export default defineComponent({
   border-radius: inherit;
 
   background-color: rgba(0, 0, 0, .5);
-  background-image: url("http://101.201.66.67/static/icon/play_bar/arrows_up_line 1.svg");
+  background-image: url("http://123.57.7.117/static/icon/play_bar/arrows_up_line 1.svg");
   background-size: 60% 60%;
   background-position: center;
   background-repeat: no-repeat;
@@ -312,19 +275,19 @@ export default defineComponent({
 }
 #like
 {
-  background-image: url("http://101.201.66.67/static/icon/play_bar/dislike.svg");
+  background-image: url("http://123.57.7.117/static/icon/play_bar/dislike.svg");
 }
 #comment
 {
-  background-image: url("http://101.201.66.67/static/icon/play_bar/comment.svg");
+  background-image: url("http://123.57.7.117/static/icon/play_bar/comment.svg");
 }
 #append
 {
-  background-image: url("http://101.201.66.67/static/icon/play_bar/append.svg");
+  background-image: url("http://123.57.7.117/static/icon/play_bar/append.svg");
 }
 #share
 {
-  background-image: url("http://101.201.66.67/static/icon/play_bar/share.svg");
+  background-image: url("http://123.57.7.117/static/icon/play_bar/share.svg");
 }
 
 /* 右侧信息区 */
@@ -353,7 +316,7 @@ export default defineComponent({
   height: 3.6vh;
   width: 3.6vh;
   background-size: cover;
-  background-image: url("http://101.201.66.67/static/icon/play_bar/play_list.svg");
+  background-image: url("http://123.57.7.117/static/icon/play_bar/play_list.svg");
 }
 #listLength
 {
@@ -394,19 +357,19 @@ export default defineComponent({
 }
 #prevBigBtn
 {
-  background-image: url("http://101.201.66.67/static/icon/play_bar/prev_black.svg");
+  background-image: url("http://123.57.7.117/static/icon/play_bar/prev_black.svg");
 }
 #nxtBigBtn
 {
-  background-image: url("http://101.201.66.67/static/icon/play_bar/next_black.svg");
+  background-image: url("http://123.57.7.117/static/icon/play_bar/next_black.svg");
 }
 #prevBigBtn:hover
 {
-  background-image: url("http://101.201.66.67/static/icon/play_bar/prev_red.svg");
+  background-image: url("http://123.57.7.117/static/icon/play_bar/prev_red.svg");
 }
 #nxtBigBtn:hover
 {
-  background-image: url("http://101.201.66.67/static/icon/play_bar/next_red.svg");
+  background-image: url("http://123.57.7.117/static/icon/play_bar/next_red.svg");
 }
 
 </style>

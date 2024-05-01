@@ -1,17 +1,28 @@
 <script>
-import {defineComponent, ref} from 'vue';
-import GoogleInput from '@/components/GOOGLE_INPUT.vue';
+import {defineComponent, onMounted, ref} from 'vue';
+import GOOGLE_INPUT from '@/components/GOOGLE_INPUT.vue';
 import {useRouter} from 'vue-router';
 import {emailCheck, phoneCheck} from '@/utils/input_check';
+import axios from 'axios';
+import {API_BASE_URL} from '@/assets/constants';
 
 export default defineComponent({
   name: 'registerPage',
-  components: {GoogleInput},
+  components: {GOOGLE_INPUT},
   setup() {
     const leftButtonText = ref('返回登录');
     const rightButtonText = ref('下一步');
     const router = useRouter();
     const checkMethod = [emailCheck, phoneCheck];
+    const password1 = ref('');
+    const password2 = ref('');
+
+    const userInfo = ref({
+      'username': null,
+      'email': null,
+      'password': null,
+    });
+
     const leftButtonClick = ()=>{
       if (leftButtonText.value === '返回登录') {
         router.push('/login');
@@ -24,12 +35,25 @@ export default defineComponent({
     const rightButtonClick = ()=> {
       if (rightButtonText.value === '下一步') {
         leftButtonText.value = '上一步';
-        rightButtonText.value = '注册';
+        rightButtonText.value = '注册并登录';
         document.getElementById('part1').style.marginLeft = '-25vw';
       } else {
         // register step
+        if (password1.value!==password2.value || password1.value === null || password2.value === null) {
+          document.getElementById('passwordErrorMessage').style.display = 'block';
+        } else {
+          userInfo.value.password = password1;
+          axios.post(API_BASE_URL + '/new_user_info/', userInfo.value)
+              .then((response)=>{
+                router.push('/login');
+              });
+        }
       }
     };
+
+    onMounted(()=>{
+      document.getElementById('passwordErrorMessage').style.display = 'none';
+    });
 
     return {
       leftButtonText,
@@ -37,6 +61,9 @@ export default defineComponent({
       leftButtonClick,
       rightButtonClick,
       checkMethod,
+      userInfo,
+      password1,
+      password2,
     };
   },
 });
@@ -51,20 +78,21 @@ export default defineComponent({
         <div id="inputArea">
           <div id="part1" class="inputUnite">
             <div id="username">
-              <GoogleInput placeholder="用户名"></GoogleInput>
+              <GOOGLE_INPUT placeholder="用户名" @value="(value)=>{userInfo.username=value}"></GOOGLE_INPUT>
             </div>
             <div id="account">
-              <GoogleInput :check-method="checkMethod" placeholder="电子邮箱或手机号码"></GoogleInput>
+              <GOOGLE_INPUT :check-method="checkMethod" placeholder="电子邮箱或手机号码" @value="(value)=>{userInfo.email=value}"></GOOGLE_INPUT>
             </div>
           </div>
           <div id="part2" class="inputUnite">
             <div id="password">
-              <GoogleInput placeholder="密码" type="password"></GoogleInput>
+              <GOOGLE_INPUT placeholder="密码" type="password" @value="(value)=>{password1=value}"></GOOGLE_INPUT>
               <div id="passwordComplexity"></div>
             </div>
             <div id="repeatPassword">
-              <GoogleInput placeholder="再次输入密码" type="password"></GoogleInput>
+              <GOOGLE_INPUT placeholder="再次输入密码" type="password" @value="(value)=>{password2=value}"></GOOGLE_INPUT>
             </div>
+            <div id="passwordErrorMessage">输入的两次密码不相同</div>
           </div>
         </div>
         <div id="buttonArea">

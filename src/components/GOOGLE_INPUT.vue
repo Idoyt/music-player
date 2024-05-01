@@ -1,5 +1,6 @@
 <script>
 import {computed, defineComponent, onMounted, ref} from 'vue';
+import {STATIC_BASE_URL} from '@/assets/constants';
 
 export default defineComponent({
   name: 'Google_Input',
@@ -11,7 +12,7 @@ export default defineComponent({
         return value.length < 21;
       },
     },
-    status: {
+    state: {
       type: String,
       default: 'Correct',
       validator: (value) => {
@@ -32,8 +33,9 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    id: String,
   },
-  setup(props) {
+  setup(props, {emit}) {
     // param for main content
     const inputText = ref('');
 
@@ -41,51 +43,59 @@ export default defineComponent({
     const domInput = ref(null);
     const domPlaceholder = ref(null);
 
-    // param for status
+    // param for state
     const inputType = ref('text');
     const isPwd = ref(false);
-    const showPwdStatus = ref('clos');
+    const showPwdState = ref('clos');
     const allowedType = ['text', 'password'];
 
     const imageSrc = computed(()=>{
-      return 'http://101.201.66.67/static/icon/google_input/eye_' + showPwdStatus.value + '_gray.svg';
+      return STATIC_BASE_URL+'/static/icon/google_input/eye_' + showPwdState.value + '_gray.svg';
     });
 
     // check input type is allowed or not, if not , change it to 'text' type
     inputType.value = allowedType.includes(props.type) ? props.type : 'text';
     isPwd.value = (inputType.value === 'password');
 
-    const focus = ()=>{
+    const focusStyle = ()=>{
       if (!domInput.value) return;
-      domInput.value.classList.add('input' + props.status);
+      domInput.value.classList.add('input' + props.state);
       domInput.value.classList.add('inputFocus');
 
-      domPlaceholder.value.classList.add('placeholder' + props.status);
+      domPlaceholder.value.classList.add('placeholder' + props.state);
       domPlaceholder.value.classList.add('placeholderFocus');
-      // console.log(domPlaceholder.value.classList);
-
+    };
+    const focus = ()=>{
+      focusStyle();
       if (props.needSelect && inputText.value!=='') domInput.value.select();
+      // console.log(domInput.value.classList);
     };
     const blur = ()=>{
       if (inputText.value === '') {
         domPlaceholder.value.classList.remove('placeholderFocus');
-        showPassword();
-      } else focus();
+      } else focusStyle();
       if (domPlaceholder.value !== null && domInput.value !== null) {
-        domPlaceholder.value.classList.remove('placeholder' + props.status);
-        domInput.value.classList.remove('input' + props.status);
+        domPlaceholder.value.classList.remove('placeholder' + props.state);
+        domInput.value.classList.remove('input' + props.state);
         domInput.value.classList.remove('inputFocus');
       }
     };
     const showPassword = ()=>{
-      showPwdStatus.value = showPwdStatus.value === 'clos' ? 'open' : 'clos';
-      inputType.value = showPwdStatus.value === 'clos' ? 'password' : 'text';
+      showPwdState.value = showPwdState.value === 'clos' ? 'open' : 'clos';
+      inputType.value = showPwdState.value === 'clos' ? 'password' : 'text';
+    };
+
+    const returnValue = ()=>{
+      emit('value', inputText.value);
     };
 
     onMounted(()=>{
       if (inputType.value === 'password') {
         if (!domInput.value) return;
         domInput.value.classList.add('inputPwd');
+      } else {
+        if (!domInput.value) return;
+        domInput.value.classList.remove('inputPwd');
       }
     });
     return {
@@ -98,6 +108,7 @@ export default defineComponent({
       showPassword,
       isPwd,
       imageSrc,
+      returnValue,
     };
   },
 });
@@ -107,12 +118,13 @@ export default defineComponent({
   <div>
     <div id="inputBox">
       <input
-          ref="domInput" v-model="inputText"
+          ref="domInput"
+          v-model="inputText"
           :type=inputType
           class="input"
           @blur="blur"
           @focus="focus"
-          @input="$emit('value', inputText)"
+          @input="returnValue"
       >
       <label ref="domPlaceholder" class="placeholder">{{$props.placeholder}}</label>
       <img

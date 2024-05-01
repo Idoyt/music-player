@@ -1,5 +1,6 @@
 import {reactive, ref} from 'vue';
 import axios from 'axios';
+import {API_BASE_URL} from '@/assets/constants';
 
 const domAudio = new Audio();
 const audioList = ref([]);
@@ -8,7 +9,7 @@ const audioInfo = reactive({
   tag: '',
   nowLine: -1,
   lyric: {},
-  url: 'http://101.201.66.67/assets/audio/MSC-00001.ogg',
+  url: API_BASE_URL + '/assets/audio/MSC-00001.ogg',
   title: 'audio title',
   status: 0,
   duration: {min: '00', sec: '00', value: ''},
@@ -22,7 +23,7 @@ const audioInfo = reactive({
  */
 export async function initPlayer() {
   domAudio.src = audioInfo.url;
-  await getLyric('http://101.201.66.67/assets/audio/lyric/LRC-00001.utf8.lrc');
+  await getLyric(API_BASE_URL + '/assets/audio/lyric/LRC-00001.utf8.lrc');
   domAudio.addEventListener('loadedmetadata', updateCurrentTime);
   domAudio.addEventListener('timeupdate', updateCurrentTime);
 }
@@ -35,6 +36,7 @@ export function togglePlayStatus() {
   if (audioInfo.status) domAudio.pause();
   else domAudio.play();
   audioInfo.status = 1 ^ audioInfo.status;
+  return audioInfo.status;
 }
 
 /**

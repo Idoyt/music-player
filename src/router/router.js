@@ -29,6 +29,11 @@ const routes = [
     name: 'space',
     component: ()=>import('@/views/SPACE.vue'),
   },
+  {
+    path: '/test',
+    name: 'test',
+    component: ()=>import('@/views/TeSt.vue'),
+  },
 ];
 
 export default routes;

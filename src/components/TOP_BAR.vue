@@ -1,5 +1,6 @@
 <script>
 import {defineComponent, onMounted, reactive, ref} from 'vue';
+import {API_BASE_URL} from '@/assets/constants';
 
 export default defineComponent({
   name: 'Top_bar',
@@ -9,7 +10,7 @@ export default defineComponent({
     const userInfo = reactive({
       id: 'default',
       name: 'login',
-      avatar: 'http://101.201.66.67/assets/images/avatar/',
+      avatar: API_BASE_URL + '/assets/images/avatar/',
     });
 
     const initUserInfo = ()=>{
@@ -134,7 +135,7 @@ export default defineComponent({
   height: 2.5vh;
   width: 2.5vh;
 
-  background-image: url("http://101.201.66.67/static/icon/top_bar/search.svg");
+  background-image: url("http://123.57.7.117/static/icon/top_bar/search.svg");
   background-size: cover;
 }
 #rightArea
@@ -172,14 +173,14 @@ export default defineComponent({
 }
 #msg
 {
-  background-image: url("http://101.201.66.67/static/icon/top_bar/message.svg");
+  background-image: url("http://123.57.7.117/static/icon/top_bar/message.svg");
 }
 #set
 {
-  background-image: url("http://101.201.66.67/static/icon/top_bar/setting.svg");
+  background-image: url("http://123.57.7.117/static/icon/top_bar/setting.svg");
 }
 #thm
 {
-  background-image: url("http://101.201.66.67/static/icon/top_bar/theme.svg");
+  background-image: url("http://123.57.7.117/static/icon/top_bar/theme.svg");
 }
 </style>
