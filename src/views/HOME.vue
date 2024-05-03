@@ -14,6 +14,8 @@ import recordPlayed from '@/views/content_pages/AUDIO_RECORD.vue';
 import {useStore} from 'vuex';
 import {getCurrentTime} from '@/utils/music_play_bus';
 import {useRouter} from 'vue-router';
+import axios from 'axios';
+import {API_BASE_URL} from '@/assets/constants';
 
 
 export default defineComponent({
@@ -45,12 +47,14 @@ export default defineComponent({
       const store = useStore();
       store.commit('audioModule/updateAudioCurrentTime', getCurrentTime());
     });
-    onBeforeMount(()=>{
+    onBeforeMount(async ()=>{
       const store = useStore();
       const router = useRouter();
-      if (store.state.audioModule.loginStatus === false) {
-        router.push('/login');
-      }
+
+      const data = {'email': store.state.audioModule.userInfo.email};
+      const response = await axios.get(API_BASE_URL + '/check_login/', {params: data, withCredentials: true});
+
+      if (response.data.state !== 'success') router.push('/login');
     });
 
     return {

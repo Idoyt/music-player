@@ -1,6 +1,6 @@
 import {reactive, ref} from 'vue';
 import axios from 'axios';
-import {API_BASE_URL} from '@/assets/constants';
+import {STATIC_BASE_URL} from '@/assets/constants';
 
 const domAudio = new Audio();
 const audioList = ref([]);
@@ -9,7 +9,7 @@ const audioInfo = reactive({
   tag: '',
   nowLine: -1,
   lyric: {},
-  url: API_BASE_URL + '/assets/audio/MSC-00001.ogg',
+  url: STATIC_BASE_URL + '/assets/audio/MSC-00001.ogg',
   title: 'audio title',
   status: 0,
   duration: {min: '00', sec: '00', value: ''},
@@ -22,8 +22,9 @@ const audioInfo = reactive({
  * @return {Promise<void>}
  */
 export async function initPlayer() {
+  domAudio.crossOrigin = 'anonymous';
   domAudio.src = audioInfo.url;
-  await getLyric(API_BASE_URL + '/assets/audio/lyric/LRC-00001.utf8.lrc');
+  await getLyric(STATIC_BASE_URL + '/assets/audio/lyric/LRC-00001.utf8.lrc');
   domAudio.addEventListener('loadedmetadata', updateCurrentTime);
   domAudio.addEventListener('timeupdate', updateCurrentTime);
 }
@@ -126,7 +127,6 @@ function updateNowLineProactively(nowTime) {
       audioInfo.nowLine = i;
     }
   }
-  console.log(audioInfo.nowLine);
 }
 
 /**
@@ -135,10 +135,11 @@ function updateNowLineProactively(nowTime) {
  * @param {string} url
  */
 export async function getLyric(url) {
-  let response = null;
   try {
-    response = await axios.get(url);
-    audioInfo.lyric = parseLyric(response.data);
+    await axios.get(url)
+        .then((response)=>{
+          audioInfo.lyric = parseLyric(response.data);
+        });
   } catch (error) {
     console.log(error);
   }

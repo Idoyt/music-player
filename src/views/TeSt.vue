@@ -1,29 +1,43 @@
 <template>
   <div>
-    <GOOGLE_INPUT @value=data1></GOOGLE_INPUT>
-    <div>{{data1}}</div>
-    <GOOGLE_INPUT @value=data2></GOOGLE_INPUT>
-    <div>{{data2}}</div>
+    <canvas id="canvas"></canvas>
   </div>
 </template>
 <script>
 
-import GOOGLE_INPUT from '@/components/GOOGLE_INPUT.vue';
-import {ref, watch} from 'vue';
 
 export default {
-  components: {
-    GOOGLE_INPUT,
-  },
   setup() {
-    const data1 = ref(233);
-    const data2 = ref(233);
-
-    watch(data1, (value)=>{
-      console.log(value);
-    });
-
-    return {data1, data2};
+    const canvas = document.getElementById('canvas');
+    canvas.fillStyle = 'Red';
+    canvas.fillRect(0, 0, 100, 100);
   },
 };
 </script>
+
+<style>
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100%;
+  height: 100vh;
+  background-color: rgb(0, 0, 0);
+}
+
+#canvas {
+  display: block;
+  width: 100%;
+  height: 600px;
+  border-bottom: 2px solid #fff;
+}
+
+#audio {
+  display: block;
+  margin: 30px auto 0;
+}
+
+</style>

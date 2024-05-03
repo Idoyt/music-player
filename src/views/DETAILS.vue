@@ -1,7 +1,7 @@
 <script>
-import {computed, defineComponent, onBeforeMount, onBeforeUnmount, ref, watch} from 'vue';
+import {computed, defineComponent, onBeforeMount, onMounted, ref, watch} from 'vue';
 import audioPlayBar from '@/components/AUDIO_PLAY_BAR.vue';
-import {getAudioInfo, getCurrentTime, setCurrentTime} from '@/utils/music_play_bus';
+import {getAudioInfo, setCurrentTime} from '@/utils/music_play_bus';
 import {useStore} from 'vuex';
 import {useRouter} from 'vue-router';
 
@@ -24,26 +24,25 @@ export default defineComponent({
     };
 
     onBeforeMount(()=>{
-      setCurrentTime('currentTime', store.state['audioModule/audioCurrentTime']);
-    });
-    onBeforeUnmount(()=>{
-      store.commit('audioModule/updateAudioInfo', getCurrentTime());
+      setCurrentTime('currentTime', store.state.audioModule.audioCurrentTime);
     });
 
-    watch(nowLine, ()=>{
-      const domNowLine =
-          document.getElementById((audioInfo.value.nowLine).toString());
-      let domLastLine = null;
+    onMounted(()=>{
+      watch(nowLine, ()=>{
+        const domNowLine =
+            document.getElementById((audioInfo.value.nowLine).toString());
+        let domLastLine = null;
 
-      domLyric.value.style.marginTop =
-          'calc(50% - ' + (nowLine.value * 8).toString() + 'vh' + ')';
-      if (domNowLine) domNowLine.style.color = '#88cccc';
-      if (lastLine !== -1) {
-        domLastLine =
-            document.getElementById((lastLine).toString());
-        if (domLastLine) domLastLine.style.color = 'white';
-      }
-      lastLine = nowLine.value;
+        domLyric.value.style.marginTop =
+            'calc(50% - ' + (nowLine.value * 8).toString() + 'vh' + ')';
+        if (domNowLine) domNowLine.style.color = '#88cccc';
+        if (lastLine !== -1) {
+          domLastLine =
+              document.getElementById((lastLine).toString());
+          if (domLastLine) domLastLine.style.color = 'white';
+        }
+        lastLine = nowLine.value;
+      });
     });
 
     return {

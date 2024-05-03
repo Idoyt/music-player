@@ -1,20 +1,22 @@
 <script>
 import {defineComponent, onMounted, reactive, ref} from 'vue';
-import {API_BASE_URL} from '@/assets/constants';
+import {STATIC_BASE_URL} from '@/assets/constants';
+import {useStore} from 'vuex';
 
 export default defineComponent({
   name: 'Top_bar',
   setup() {
     const searchContainer = ref('');
     const searchDefault = '搜索音乐';
+    const store = useStore();
     const userInfo = reactive({
-      id: 'default',
-      name: 'login',
-      avatar: API_BASE_URL + '/assets/images/avatar/',
+      username: 'login',
+      avatar: STATIC_BASE_URL + '/assets/images/avatar/',
     });
 
     const initUserInfo = ()=>{
-      userInfo.avatar = userInfo.avatar + userInfo.id + '.jpg';
+      userInfo.avatar = userInfo.avatar + 'default' + '.jpg';
+      userInfo.username = store.state.audioModule.userInfo.username;
     };
 
     const changeSearchBarStyle = (isFocus)=> {
@@ -53,7 +55,7 @@ export default defineComponent({
     <div id="rightArea">
       <div id="userInfo">
         <img id="userAvatar" :src=userInfo.avatar alt="user's avatar">
-        <span id="uid">{{userInfo.name}}</span>
+        <span id="uid">{{userInfo.username}}</span>
       </div>
       <div id="functionBtn">
         <span id="msg" class="btn"></span>

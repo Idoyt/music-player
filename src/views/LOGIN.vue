@@ -38,41 +38,58 @@ export default defineComponent({
       password.value = data;
     };
     const checkMethodTrigger = ref({submit: 'false'});
-    // const checkResult = ref('');
+    const $axios = axios.create({
+      timeout: 3000,
+      withCredentials: true,
+    });
+
+
+    const checkEmail = ()=>{
+      const data = {'email': account.value};
+      $axios.get(API_BASE_URL + `/check_email/`, {params: data, withCredentials: true})
+          .then((response) => {
+            if (response.data.state === 'success') {
+              document.getElementById('inputAccount').style.marginLeft = '-25vw';
+              checkBtnTextRight.value = '登录';
+              checkBtnTextLeft.value = '上一步';
+              needSelect.value = false;
+            } else {
+              accountErrorMessage.value = response.data.message;
+            }
+          });
+    };
+
+
+    const storageUserInfo = ()=>{
+      $axios.get(API_BASE_URL + '/get_user_info/', {withCredentials: true})
+          .then((response)=>store.commit('audioModule/updateUserInfo', response.data.message));
+    };
+
+
+    const loginAccount = async ()=>{
+      const response = await $axios.post(API_BASE_URL + '/login/', {
+        'email': account.value,
+        'password': password.value,
+      }, {withCredentials: true});
+
+      if (response.data.state === 'success') {
+        storageUserInfo();
+        await router.push('/');
+      } else passwordErrorMessage.value = response.data.message;
+    };
+
+
     const checkAccount = ()=>{
       if (checkBtnTextRight.value === '下一步') {
         checkMethodTrigger.value.submit = 'true';
         if (emailCheck(account.value) || phoneCheck(account.value)) {
           accountInputState.value = 'Correct';
-
-          axios.post(API_BASE_URL + `/check_email/`, {'email': account.value})
-              .then((response) => {
-                console.log(response);
-                if (response.data.state === 'success') {
-                  document.getElementById('inputAccount').style.marginLeft = '-25vw';
-                  checkBtnTextRight.value = '登录';
-                  checkBtnTextLeft.value = '上一步';
-                  needSelect.value = false;
-                } else {
-                  accountErrorMessage.value = response.data.message;
-                }
-              });
-        } else {
-          accountInputState.value = 'Error';
-        }
-      } else {
-        // check password
-        axios.post(API_BASE_URL + '/login/', {'email': account.value, 'password': password.value})
-            .then((response) => {
-              if (response.data.state === 'success') {
-                router.push('/');
-                store.commit('audioModule/updateLoginState', true);
-              } else {
-                passwordErrorMessage.value = response.data.message;
-              }
-            });
-      }
+          checkEmail();
+        } else accountInputState.value = 'Error';
+      } else loginAccount();
     };
+
+
     const navigate = ()=>{
       if (checkBtnTextLeft.value === '创建账号') router.push('/register');
       else {

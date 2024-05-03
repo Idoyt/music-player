@@ -12,5 +12,5 @@ import audioManager from '@/store/audio_manager';
 //   createApp(App).use(router).use(audioManager).mount('#app');
 //   store.commit('audioModule/updateLoadedMainJs');
 // }
-initPlayer();
+initPlayer().then((r) => {});
 createApp(App).use(router).use(audioManager).mount('#app');

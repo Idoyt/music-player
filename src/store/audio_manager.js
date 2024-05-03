@@ -1,14 +1,20 @@
 import {createStore} from 'vuex';
-import axios from 'axios';
-import {API_BASE_URL} from '@/assets/constants';
 
 const audioModule = {
   namespaced: true,
   state: {
     audioCurrentTime: -1,
     audioNowLine: -1,
-    loginStatus: false,
-    userInfo: JSON,
+    userInfo: {
+      'email': null,
+      'username': null,
+      'avatar_url': null,
+      'is_creator': null,
+      'follower_id_list': [],
+      'following_id_list': [],
+      'dislikes_music': [],
+      'dislikes_list': [],
+    },
   },
   mutations: {
     updateAudioCurrentTime(state, domCurrentTime) {
@@ -17,12 +23,10 @@ const audioModule = {
     updateAudioNowLine(state, nowLine) {
       state.audioNowLine = nowLine;
     },
-    updateLoginState(state, status) {
-      state.loginStatus = status;
-      axios.get(API_BASE_URL + '/get_user_info')
-          .then((response)=>{
-            console.log(response);
-          });
+    updateUserInfo(state, data) {
+      Object.keys(data).forEach(function(key) {
+        state.userInfo[key] = data[key];
+      });
     },
   },
   actions: {

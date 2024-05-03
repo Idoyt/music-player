@@ -1,6 +1,6 @@
 <script>
-import {computed, defineComponent, ref, watch} from 'vue';
-import {getAudioInfo, getAudioList, setCurrentTime, togglePlayStatus} from '@/utils/music_play_bus';
+import {computed, defineComponent, onMounted, ref, watch} from 'vue';
+import {getAudioDom, getAudioInfo, getAudioList, setCurrentTime, togglePlayStatus} from '@/utils/music_play_bus';
 import {STATIC_BASE_URL} from '@/assets/constants';
 
 export default defineComponent({
@@ -59,6 +59,64 @@ export default defineComponent({
       if (!dragging.value) localRatio.value = value;
     });
 
+
+    onMounted(()=>{
+      const audio = getAudioDom();
+      const canvas = document.getElementById('frequencyPlot');
+      const context = canvas.getContext('2d');
+
+      let init = false;
+      let dataArray;
+      let analyser;
+      audio.onplay = ()=> {
+        if (init) return;
+        const audioCtx = new AudioContext();
+        const source = audioCtx.createMediaElementSource(audio);
+
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 2048;
+        dataArray = new Uint8Array(analyser.frequencyBinCount * 2);
+
+        source.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        init = true;
+        console.log('init successfully');
+        draw();
+      };
+
+      const draw = ()=>{
+        requestAnimationFrame(draw);
+
+        canvas.width = 2000;
+        const {height, width} = canvas;
+        context.clearRect(0, 0, width, height);
+
+        if (!init) return;
+        analyser.getByteFrequencyData(dataArray);
+        const len = dataArray.length / 24;
+        const barBoxWidth = width / len / 2;
+        canvas.width = barBoxWidth * len * 2 + barBoxWidth;
+        context.fillStyle = '#88cccc';
+
+        const minHeight = Math.min.apply(null, dataArray);
+        const maxHeight = Math.max.apply(null, dataArray);
+
+        for (let index = 0; index < len; index++) {
+          const element = dataArray[index];
+          const barHeight = Math.max(0, (element - minHeight - 30)) / (maxHeight-minHeight) * height;
+          const x1 = index * barBoxWidth + width / 2;
+          const x2 = width / 2 - (index + 1) * barBoxWidth;
+          const y = height - barHeight;
+          const barWidth = barBoxWidth / 2;
+
+          if (x1 + barWidth > width) continue;
+          if (x2 - barWidth < 0) continue;
+
+          context.fillRect(x1 + barWidth/2, y, barWidth, barHeight);
+          context.fillRect(x2 + barWidth/2, y, barWidth, barHeight);
+        }
+      };
+    });
 
     return {
       playIconUrl,
@@ -156,20 +214,18 @@ export default defineComponent({
 
   position: absolute;
   z-index: 0;
-  top: -9vh;
+  top: -11vh;
 
   display: flex;
   justify-content: center;
 
-  height: 10vh;
+  height: 12vh;
   width: 100%;
 }
 #frequencyPlot
 {
+  margin-left: 8px;
   height: inherit;
-  width: 50%;
-
-  background-color: white;
 }
 
 /* 顶部进度条 */
