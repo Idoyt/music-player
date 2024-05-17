@@ -155,7 +155,7 @@ export default defineComponent({
         </div>
         <div style="display: flex; flex-direction: column; height: inherit; margin-left: 1vw; justify-content: center">
           <div v-show=!isDetail id="audioTitle">
-            <span style="white-space: nowrap; font-size: 2vh">{{audioInfo.title}}</span>
+            <span style="white-space: nowrap; font-size: 2vh">Miku -初音未来 (初音ミク) / Anamanaguchi</span>
           </div>
           <div id="userBtnArea">
             <span id="like" class="userBtn"></span>
@@ -164,7 +164,7 @@ export default defineComponent({
             <span id="share" class="userBtn"></span>
           </div>
         </div>
-        <span v-show=isDetail id="timestamp" style="color: white">
+        <span v-show=isDetail id="timestamp" style="color: black">
         {{audioInfo.currentTime.min}}:{{audioInfo.currentTime.sec}} /
         {{audioInfo.duration.min}}:{{audioInfo.duration.sec}}
         </span>
@@ -326,7 +326,6 @@ export default defineComponent({
   margin-right: .8vw;
   height: 3vh;
   width: 3vh;
-
   background-size: cover;
 }
 #like

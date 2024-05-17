@@ -32,7 +32,7 @@ const routes = [
   {
     path: '/test',
     name: 'test',
-    component: ()=>import('@/views/TeSt.vue'),
+    component: ()=>import('@/views/PlayListDetails.vue'),
   },
 ];
 

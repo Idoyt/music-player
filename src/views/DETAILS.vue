@@ -39,7 +39,7 @@ export default defineComponent({
         if (lastLine !== -1) {
           domLastLine =
               document.getElementById((lastLine).toString());
-          if (domLastLine) domLastLine.style.color = 'white';
+          if (domLastLine) domLastLine.style.color = 'black';
         }
         lastLine = nowLine.value;
       });
@@ -59,15 +59,15 @@ export default defineComponent({
   <div id="componentBody">
     <div id="backToHome" @click="backToHome"></div>
     <div id="background">
-      <div id="filter"></div>
-      <img id="background_image" alt="background" src="http://123.57.7.117/assets/images/album/IMG-00001.jpg">
+<!--      <div id="filter"></div>-->
+<!--      <img id="background_image" alt="background" src="http://123.57.7.117/assets/images/album/IMG-00001.jpg">-->
     </div>
     <div id="mainContent">
       <div id="albumCover"></div>
       <div id="lyricDisplayArea">
         <div id="audioInfo">
           <div v-if="finishLoadLyric">
-            <p id="title" style="font-size: 4vh; margin-bottom: 0; color: white">{{audioInfo.lyric.ti}}</p>
+            <p id="title" style="font-size: 4vh; margin-bottom: 0; color: black">{{audioInfo.lyric.ti}}</p>
             <div style="margin-top: 1vh;font-size: 2vh;color: #b6b6b6">
               <p id="artist" style="margin: 0">歌手： {{audioInfo.lyric.ar}}</p>
               <p id="album">专辑： {{audioInfo.lyric.al}}</p>
@@ -80,7 +80,7 @@ export default defineComponent({
           <div id="lyric" ref="domLyric" style="transition: .5s; margin-top: 50%">
             <div v-if="finishLoadLyric">
               <p v-for="(line, index) in audioInfo.lyric.lyr" :key="index" style="margin: 0;height: 8vh">
-                <span :id=index style="color: white; font-size: 2vh; user-select: none;">{{line.text}}</span>
+                <span :id=index style="color: black; font-size: 2vh; user-select: none;">{{line.text}}</span>
               </p>
             </div>
             <div v-else>loading lyric</div>
@@ -132,6 +132,7 @@ export default defineComponent({
   position: absolute;
   height: inherit;
   width: inherit;
+  background-color: #f0f4f9;
 }
 #background_image
 {

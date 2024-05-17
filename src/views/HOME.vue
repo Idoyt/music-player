@@ -1,16 +1,18 @@
 <script>
-import {defineComponent, getCurrentInstance, onBeforeMount, onBeforeUnmount, ref} from 'vue';
+import {defineComponent, onBeforeMount, ref, watch} from 'vue';
 import audioPlayBar from '@/components/AUDIO_PLAY_BAR.vue';
-import menuBar from '@/components/MENU_BAR.vue';
 import topBar from '@/components/TOP_BAR.vue';
 
-import personalizedRecommendations from '@/views/content_pages/RECOMMENDATIONS.vue';
-import audioHall from '@/views/content_pages/MUSIC_HALL.vue';
-import audioRadar from '@/views/content_pages/MUSIC_RADAR.vue';
+import recommendationPage from '@/views/home_contains/RECOMMENDATIONS.vue';
+import audioHall from '@/views/home_contains/MUSIC_HALL.vue';
+import audioRadar from '@/views/home_contains/MUSIC_RADAR.vue';
 
-import audioCollected from '@/views/content_pages/COLLECTED_MUSIC.vue';
-import usersFollowed from '@/views/content_pages/FOLLOWED_USERS.vue';
-import recordPlayed from '@/views/content_pages/AUDIO_RECORD.vue';
+import audioCollected from '@/views/home_contains/COLLECTED_MUSIC.vue';
+import usersFollowed from '@/views/home_contains/FOLLOWED_USERS.vue';
+import recordPlayed from '@/views/home_contains/AUDIO_RECORD.vue';
+import space from '@/views/SPACE.vue';
+import playListDetails from '@/views/PlayListDetails.vue';
+
 import {useStore} from 'vuex';
 import {getCurrentTime} from '@/utils/music_play_bus';
 import {useRouter} from 'vue-router';
@@ -22,46 +24,61 @@ export default defineComponent({
   name: 'homePage',
   // 工具类Component需要放在组件Personalized之前
   components: {
-    menuBar,
     audioPlayBar,
     topBar,
 
-    personalizedRecommendations,
+    recommendationPage,
     audioHall,
     audioRadar,
     audioCollected,
     usersFollowed,
     recordPlayed,
+    space,
+    playListDetails,
   },
   setup() {
-    const usingComponent = ref('personalizedRecommendations');
-    const componentList = Object.keys(getCurrentInstance().type.components);
-    const getUsingComponent = (navigate)=>{
-      const startComponent = componentList.indexOf('personalizedRecommendations');
-      usingComponent.value = componentList[startComponent + navigate];
+    const playlist = ref([]);
+    const store = useStore();
+    const usingComponent = ref(store.state.audioModule.navigateTo.component);
+    const componentData = ref(store.state.audioModule.navigateTo.data);
+    const navigate = (component)=> {
+      store.commit('audioModule/updateNavigate', {to: component, data: {}});
     };
 
-    const loginStatus = ref(true);
-
-    onBeforeUnmount(()=>{
-      const store = useStore();
-      store.commit('audioModule/updateAudioCurrentTime', getCurrentTime());
-    });
     onBeforeMount(async ()=>{
       const store = useStore();
       const router = useRouter();
+      let data = null;
+      let response = null;
 
-      const data = {'email': store.state.audioModule.userInfo.email};
-      const response = await axios.get(API_BASE_URL + '/check_login/', {params: data, withCredentials: true});
+      // get music current time
+      store.commit('audioModule/updateAudioCurrentTime', getCurrentTime());
 
-      if (response.data.state !== 'success') router.push('/login');
+
+      // check login status
+      data = {'email': store.state.audioModule.userInfo.email};
+      response = await axios.get(API_BASE_URL + '/check_login/', {params: data, withCredentials: true});
+      if (response.data.state !== 'success') await router.push('/login');
+
+
+      // get playlist user created
+      data = {};
+      response = await axios.get(API_BASE_URL + '/get_playlist_info/', {params: data, withCredentials: true});
+      if (response.data.state === 'success') {
+        playlist.value = response.data.message;
+      }
+    });
+
+    watch(store.state.audioModule.navigateTo, (value)=>{
+      usingComponent.value = value.component;
+      componentData.value = value.data;
     });
 
     return {
       usingComponent,
-      getUsingComponent,
-      componentList,
-      loginStatus,
+      componentData,
+      playlist,
+      navigate,
     };
   },
 });
@@ -70,11 +87,52 @@ export default defineComponent({
 <template>
   <div id="appBody">
     <div id="menuBar">
-      <menu-bar @navigate="getUsingComponent"/>
+      <el-menu v-model="usingComponent" style="height: 100%">
+        <span style="padding: 1vh 20px 0 20px; font-size: 30px; white-space: nowrap">Miku Music</span>
+        <el-menu-item-group title="Online Music">
+          <el-menu-item index="0" @click="navigate('recommendationPage')">
+            <span class="menuItem">Recommendation</span>
+          </el-menu-item>
+          <el-menu-item index="1" @click="navigate('audioHall')">
+            <span class="menuItem">Music Hall</span>
+          </el-menu-item>
+          <el-menu-item index="2" @click="navigate('audioRadar')">
+            <span class="menuItem">Music Radar</span>
+          </el-menu-item>
+        </el-menu-item-group>
+
+        <el-menu-item-group title="My Music">
+          <el-menu-item index="3" @click="navigate('audioCollected')">
+            <span class="menuItem">Collected Music</span>
+          </el-menu-item>
+          <el-menu-item index="4" @click="navigate('usersFollowed')">
+            <span class="menuItem">My Followings</span>
+          </el-menu-item>
+          <el-menu-item index="5" @click="navigate('recordPlayed')">
+            <span class="menuItem">Recently Play</span>
+          </el-menu-item>
+        </el-menu-item-group>
+
+        <el-menu-item-group title="Created List">
+          <div style="min-height: 3vh">
+            <div v-for="item in playlist" :key="item">
+              <span>{{item.list_name}}</span>
+            </div>
+          </div>
+        </el-menu-item-group>
+
+        <el-menu-item-group title="Selected List">
+          <div style="min-height: 3vh">
+            <div v-for="item in playlist" :key="item">
+              <span>{{item.list_name}}</span>
+            </div>
+          </div>
+        </el-menu-item-group>
+      </el-menu>
     </div>
     <div id="mainContent">
       <div id="topBar">
-        <top-bar/>
+        <top-bar @navigate="navigate('space')"/>
       </div>
       <div id="content">
         <component :is="usingComponent"/>
@@ -97,23 +155,22 @@ export default defineComponent({
   position: relative;
   height: 100vh;
   width: 100vw;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr;
   background-color: #88cccc;
-
-  --MenuBar-width: 13.3vw;
 }
 #mainContent
 {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  width: calc(100vw - var(--MenuBar-width));
+  width: 100%;
   font-family: miku_font, serif;
 }
 #menuBar
 {
   z-index: 3;
-  width: var(--MenuBar-width);
+  font-family: miku_font, serif;
 }
 #content
 {
@@ -132,7 +189,7 @@ export default defineComponent({
   bottom: 0;
   z-index:2;
   height: 12vh;
-  width: inherit;
+  width: 90%;
 }
 #topBar
 {
@@ -140,7 +197,28 @@ export default defineComponent({
   top: 0;
   z-index: 2;
   height: 10vh;
-  width: inherit;
-
+  width: 90%;
+}
+.el-menu
+{
+  background-color: rgba(255, 255, 255, .5);
+}
+.el-menu-item-group
+{
+  margin-bottom: 3vh;
+}
+.el-menu-item
+{
+  font-size: 18px;
+  padding-right: 0;
+  border-right: 0 solid #f3263f;
+}
+.el-menu-item.is-active
+{
+  color: #f3263f;
+}
+.el-menu-item:hover
+{
+  border-right: 6px solid #f3263f;
 }
 </style>

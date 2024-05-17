@@ -15,6 +15,11 @@ const audioModule = {
       'dislikes_music': [],
       'dislikes_list': [],
     },
+    recommendedList: [],
+    navigateTo: {
+      component: 'recommendationPage',
+      data: {},
+    },
   },
   mutations: {
     updateAudioCurrentTime(state, domCurrentTime) {
@@ -24,13 +29,24 @@ const audioModule = {
       state.audioNowLine = nowLine;
     },
     updateUserInfo(state, data) {
-      Object.keys(data).forEach(function(key) {
-        state.userInfo[key] = data[key];
-      });
+      if (data !== undefined) {
+        Object.keys(data).forEach(function(key) {
+          state.userInfo[key] = data[key];
+        });
+      }
+    },
+    updateNavigate(state, {to, data}) {
+      state.navigateTo.component = to;
+      state.navigateTo.data = data;
     },
   },
   actions: {
 
+  },
+  getter: {
+    getUserInfo(state) {
+      return state.audioModule.userInfo;
+    },
   },
 };
 

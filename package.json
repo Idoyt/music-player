@@ -11,8 +11,10 @@
     "lint": "eslint --config .eslintsrc.js --ext .js src"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
     "axios": "^1.6.8",
     "core-js": "^3.8.3",
+    "element-plus": "^2.7.2",
     "fft-js": "^0.0.12",
     "iconv-lite": "^0.6.3",
     "vue": "^3.2.13",

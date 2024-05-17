@@ -1,33 +1,46 @@
 <script>
 import {defineComponent} from 'vue';
+import {useStore} from 'vuex';
 
 export default defineComponent({
   name: 'Little_Tile',
   props: {
-    indent: Object,
     showPlayVolume: {
       type: Boolean,
       default: true,
     },
-    height: {
+    list_cover: {
       type: String,
-      default: '100%',
+      default: 'http://123.57.7.117/assets/images/album/IMG-00001.jpg',
     },
-    width: {
+    play_volume: {
+      type: Number,
+      default: 3481,
+    },
+    playlist_id: {
       type: String,
-      default: '100%',
+      default: 'qwq',
     },
   },
-  setup(props) {
+  setup(props, {emit}) {
+    const store = useStore();
+    const navigateTo = ()=> {
+      store.commit('audioModule/updateNavigate', {to: 'playListDetails', data: props.playlist_id});
+    };
+
+    return {
+      navigateTo,
+    };
   },
 });
 </script>
 
 <template>
-  <div ref="domTile" :style="indent" class="littleTile">
-    <span class="tileFilter"></span>
-    <span class="playBtn" @click="start_play"/>
-    <span v-if="showPlayVolume" class="playVolume">114514</span>
+  <div id="domTile" class="littleTile" @click="navigateTo">
+    <el-image :src="$props.list_cover" style="position: absolute; border-radius: inherit"></el-image>
+    <div class="tileFilter"></div>
+    <div class="playBtn"/>
+    <span v-if="showPlayVolume" class="playVolume">{{$props.play_volume}}</span>
   </div>
 
 </template>
@@ -42,9 +55,8 @@ export default defineComponent({
   border-radius: 1.2vh;
 
   height: 100%;
-  width: 100%;
+  aspect-ratio: 1/1;
 
-  background-image: url("http://123.57.7.117/assets/images/album/IMG-00001.jpg");
   background-size: cover;
   transition-duration: .3s;
 

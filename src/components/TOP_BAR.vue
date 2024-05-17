@@ -5,9 +5,9 @@ import {useStore} from 'vuex';
 
 export default defineComponent({
   name: 'Top_bar',
-  setup() {
+  setup(props, {emit}) {
     const searchContainer = ref('');
-    const searchDefault = '搜索音乐';
+    const searchDefault = 'Search';
     const store = useStore();
     const userInfo = reactive({
       username: 'login',
@@ -24,6 +24,10 @@ export default defineComponent({
           isFocus ? 'border-bottom-left-radius: 0; border-bottom-right-radius: 0' : '';
     };
 
+    const navigate = ()=> {
+      emit('navigate');
+    };
+
     onMounted(()=>{
       initUserInfo();
     });
@@ -35,6 +39,7 @@ export default defineComponent({
       searchDefault,
       searchContainer,
       userInfo,
+      navigate,
     };
   },
 });
@@ -54,8 +59,8 @@ export default defineComponent({
 
     <div id="rightArea">
       <div id="userInfo">
-        <img id="userAvatar" :src=userInfo.avatar alt="user's avatar">
-        <span id="uid">{{userInfo.username}}</span>
+        <img id="userAvatar" :src=userInfo.avatar alt="user's avatar" @click="navigate">
+        <span id="username" @click="navigate">{{userInfo.username}}</span>
       </div>
       <div id="functionBtn">
         <span id="msg" class="btn"></span>
@@ -156,10 +161,12 @@ export default defineComponent({
   width: 3.5vh;
 
   border-radius: 1vh;
+  cursor: pointer;
 }
-#uid
+#username
 {
   vertical-align: bottom;
+  cursor: pointer;
 }
 #functionBtn
 {

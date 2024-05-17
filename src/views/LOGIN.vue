@@ -60,9 +60,14 @@ export default defineComponent({
     };
 
 
-    const storageUserInfo = ()=>{
-      $axios.get(API_BASE_URL + '/get_user_info/', {withCredentials: true})
-          .then((response)=>store.commit('audioModule/updateUserInfo', response.data.message));
+    const storageUserInfo = async ()=>{
+      const data = {'quantity': '1'};
+      const response = await $axios.get(API_BASE_URL + '/get_user_info/', {params: data, withCredentials: true});
+      console.log(response);
+      if (response.data.state === 'success') {
+        await store.commit('audioModule/updateUserInfo', response.data.message);
+        await router.push('/');
+      }
     };
 
 
@@ -73,8 +78,7 @@ export default defineComponent({
       }, {withCredentials: true});
 
       if (response.data.state === 'success') {
-        storageUserInfo();
-        await router.push('/');
+        await storageUserInfo();
       } else passwordErrorMessage.value = response.data.message;
     };
 
