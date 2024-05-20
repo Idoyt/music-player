@@ -1,16 +1,16 @@
 <script>
 import {defineComponent, onBeforeMount, ref, watch} from 'vue';
-import audioPlayBar from '@/components/AUDIO_PLAY_BAR.vue';
-import topBar from '@/components/TOP_BAR.vue';
+import audioPlayBar from '@/components/AduioPlayBar.vue';
+import topBar from '@/components/TopBar.vue';
 
-import recommendationPage from '@/views/home_contains/RECOMMENDATIONS.vue';
-import audioHall from '@/views/home_contains/MUSIC_HALL.vue';
-import audioRadar from '@/views/home_contains/MUSIC_RADAR.vue';
+import recommendationPage from '@/views/home_contains/MusicRecommend.vue';
+import audioHall from '@/views/home_contains/MusicHall.vue';
+import audioRadar from '@/views/home_contains/MusicRadar.vue';
 
-import audioCollected from '@/views/home_contains/COLLECTED_MUSIC.vue';
-import usersFollowed from '@/views/home_contains/FOLLOWED_USERS.vue';
-import recordPlayed from '@/views/home_contains/AUDIO_RECORD.vue';
-import space from '@/views/SPACE.vue';
+import audioCollected from '@/views/home_contains/MusicUserLike.vue';
+import usersFollowed from '@/views/home_contains/FollowedUsers.vue';
+import recordPlayed from '@/views/home_contains/MusicPlayHistory.vue';
+import userSpace from '@/views/UserSpace.vue';
 import playListDetails from '@/views/PlayListDetails.vue';
 
 import {useStore} from 'vuex';
@@ -33,7 +33,7 @@ export default defineComponent({
     audioCollected,
     usersFollowed,
     recordPlayed,
-    space,
+    userSpace,
     playListDetails,
   },
   setup() {
@@ -130,9 +130,10 @@ export default defineComponent({
         </el-menu-item-group>
       </el-menu>
     </div>
+
     <div id="mainContent">
       <div id="topBar">
-        <top-bar @navigate="navigate('space')"/>
+        <top-bar @navigate="navigate('userSpace')"/>
       </div>
       <div id="content">
         <component :is="usingComponent"/>
@@ -177,6 +178,7 @@ export default defineComponent({
   z-index: 1;
   margin-top: 10vh;
   margin-bottom: 12vh;
+  height: 78vh;
   overflow: auto;
 }
 #content::-webkit-scrollbar

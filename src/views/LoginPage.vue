@@ -1,6 +1,6 @@
 <script>
 import {defineComponent, onMounted, ref, watch} from 'vue';
-import GoogleInput from '@/components/GOOGLE_INPUT.vue';
+import GoogleInput from '@/components/GoogleLikeInputBox.vue';
 
 import '@/utils/input_check';
 import {emailCheck, phoneCheck} from '@/utils/input_check';

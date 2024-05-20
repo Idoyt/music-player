@@ -2,17 +2,12 @@
 import {defineComponent} from 'vue';
 
 export default defineComponent({
-  name: 'InputComponent',
-  props: {
-    value: String,
-  },
+  name: 'ArtistDisplay',
 });
 </script>
 
 <template>
-  <div id="inputBody">
-    {{$props.value}}
-  </div>
+  <div>artist display</div>
 </template>
 
 <style scoped>

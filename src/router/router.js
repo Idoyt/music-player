@@ -2,37 +2,37 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: ()=>import('@/views/HOME.vue'),
+    component: ()=>import('@/views/HomePage.vue'),
   },
   {
     path: '/admin',
     name: 'admin',
-    component: ()=>import('@/views/ADMIN.vue'),
+    component: ()=>import('@/views/AdminOnly.vue'),
   },
   {
     path: '/player',
     name: 'player',
-    component: ()=>import('@/views/DETAILS.vue'),
+    component: ()=>import('@/views/MusicPlay.vue'),
   },
   {
     path: '/register',
     name: 'register',
-    component: ()=>import('@/views/REGISTER.vue'),
+    component: ()=>import('@/views/RegisterPage.vue'),
   },
   {
     path: '/login',
     name: 'login',
-    component: ()=>import('@/views/LOGIN.vue'),
+    component: ()=>import('@/views/LoginPage.vue'),
   },
   {
     path: '/space',
     name: 'space',
-    component: ()=>import('@/views/SPACE.vue'),
+    component: ()=>import('@/views/UserSpace.vue'),
   },
   {
     path: '/test',
     name: 'test',
-    component: ()=>import('@/views/PlayListDetails.vue'),
+    component: ()=>import('@/views/UserSpace.vue'),
   },
 ];
 

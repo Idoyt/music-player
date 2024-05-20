@@ -2,12 +2,12 @@
 import {defineComponent} from 'vue';
 
 export default defineComponent({
-  name: 'musicRadar',
+  name: 'AlbumDisplay',
 });
 </script>
 
 <template>
-  <div>temp</div>
+  <div>album display</div>
 </template>
 
 <style scoped>

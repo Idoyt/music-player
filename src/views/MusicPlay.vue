@@ -1,6 +1,6 @@
 <script>
 import {computed, defineComponent, onBeforeMount, onMounted, ref, watch} from 'vue';
-import audioPlayBar from '@/components/AUDIO_PLAY_BAR.vue';
+import audioPlayBar from '@/components/AduioPlayBar.vue';
 import {getAudioInfo, setCurrentTime} from '@/utils/music_play_bus';
 import {useStore} from 'vuex';
 import {useRouter} from 'vue-router';

@@ -1,6 +1,6 @@
 <script>
 import {defineComponent, onMounted, ref} from 'vue';
-import GOOGLE_INPUT from '@/components/GOOGLE_INPUT.vue';
+import GOOGLE_INPUT from '@/components/GoogleLikeInputBox.vue';
 import {useRouter} from 'vue-router';
 import {emailCheck, phoneCheck} from '@/utils/input_check';
 import axios from 'axios';

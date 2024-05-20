@@ -4,7 +4,6 @@ const audioModule = {
   namespaced: true,
   state: {
     audioCurrentTime: -1,
-    audioNowLine: -1,
     userInfo: {
       'email': null,
       'username': null,
@@ -15,7 +14,10 @@ const audioModule = {
       'dislikes_music': [],
       'dislikes_list': [],
     },
-    recommendedList: [],
+
+    busPlaylist: [1],
+    busPlaylistPointer: 0,
+
     navigateTo: {
       component: 'recommendationPage',
       data: {},
@@ -24,9 +26,6 @@ const audioModule = {
   mutations: {
     updateAudioCurrentTime(state, domCurrentTime) {
       state.audioCurrentTime = parseFloat(domCurrentTime.toFixed(2));
-    },
-    updateAudioNowLine(state, nowLine) {
-      state.audioNowLine = nowLine;
     },
     updateUserInfo(state, data) {
       if (data !== undefined) {
@@ -38,14 +37,6 @@ const audioModule = {
     updateNavigate(state, {to, data}) {
       state.navigateTo.component = to;
       state.navigateTo.data = data;
-    },
-  },
-  actions: {
-
-  },
-  getter: {
-    getUserInfo(state) {
-      return state.audioModule.userInfo;
     },
   },
 };

@@ -1,7 +1,7 @@
 <script>
 import {defineComponent, onBeforeMount, reactive, ref} from 'vue';
 import {useStore} from 'vuex';
-import LITTLE_TILE from '@/components/LITTLE_TILE.vue';
+import LITTLE_TILE from '@/components/PlaylistTile.vue';
 import axios from 'axios';
 import {API_BASE_URL} from '@/assets/constants';
 import {useRouter} from 'vue-router';

@@ -15,7 +15,7 @@ export default defineComponent({
     });
 
     const initUserInfo = ()=>{
-      userInfo.avatar = userInfo.avatar + 'default' + '.jpg';
+      userInfo.avatar = userInfo.avatar + 'default.jpg';
       userInfo.username = store.state.audioModule.userInfo.username;
     };
 

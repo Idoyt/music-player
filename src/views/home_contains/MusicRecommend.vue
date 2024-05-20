@@ -1,7 +1,8 @@
 <script>
 import {defineComponent, ref} from 'vue';
 import {useStore} from 'vuex';
-import LITTLE_TILE from '@/components/LITTLE_TILE.vue';
+import LITTLE_TILE from '@/components/PlaylistTile.vue';
+import SingleRecommendation from '@/components/SingleRecommend.vue';
 
 export default defineComponent({
   name: 'recommendationPage',
@@ -35,6 +36,7 @@ export default defineComponent({
     };
   },
   components: {
+    SingleRecommendation,
     LITTLE_TILE,
   },
 });
@@ -45,19 +47,8 @@ export default defineComponent({
     <div>
       <span class="title">Recommendations</span>
       <div id="today">
-        <div style="display: flex; background-color: #75afaf; border-radius: 3vh; height: 90%">
-          <div style="height: 18vh;margin: 2vh 0 0 1vw">
-            <LITTLE_TILE :show-play-volume="false" list_cover="http://123.57.7.117/assets/images/album/IMG-00002.jpg"></LITTLE_TILE>
-          </div>
-          <div style="display: flex; flex-direction: column; padding: 2vh 0 0 1vw">
-            <div id="recommendTitle">花之塔</div>
-            <div id="recommendArtist">酸欠少女(Sayuri)</div>
-            <div style="margin-top: 2vh">
-              <el-image src="http://123.57.7.117/static/icon/play_bar/next_red.svg" style="height: 3vh; margin-right: 1vw"></el-image>
-              <el-image src="http://123.57.7.117/static/icon/play_bar/dislike.svg" style="height: 3vh; margin-right: 1vw"></el-image>
-              <el-image fit="cover" src="http://123.57.7.117/static/icon/play_bar/comment.svg" style="height: 3vh; margin-right: 1vw"></el-image>
-            </div>
-          </div>
+        <div style="height: 90%">
+          <SingleRecommendation></SingleRecommendation>
         </div>
         <div>
           <LITTLE_TILE :show-play-volume="false" class="tile" list_cover="https://qpic.y.qq.com/music_cover/gibZPCScqib8gWAEDI6ttxmibx21CttUUxfNr2XVyK2C7FRia9SFkdm7FA/300?n=1"></LITTLE_TILE>
