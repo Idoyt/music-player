@@ -1,11 +1,11 @@
 <script>
 import {computed, defineComponent, onBeforeMount, reactive} from 'vue';
 import SingleRecommendation from '@/components/SingleRecommend.vue';
-import Little_Tile from '@/components/PlaylistTile.vue';
+import LittleTile from '@/components/PlaylistTile.vue';
 
 export default defineComponent({
   name: 'musicRadar',
-  components: {Little_Tile, SingleRecommendation},
+  components: {LittleTile, SingleRecommendation},
   setup() {
     const listData = reactive({
       '热门': [],
@@ -47,7 +47,7 @@ export default defineComponent({
         <div class="tileContainer">
           <div v-for="(item) in listData[key]" :key="item">
             <div>
-              <Little_Tile :show-play-volume="false"/>
+              <LittleTile :show-play-volume="false"/>
               <span>{{item}}</span>
             </div>
           </div>
