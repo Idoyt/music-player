@@ -25,13 +25,13 @@ export default defineComponent({
   setup(props) {
     const playlistInfo = ref({
       music_id: 'MSC-0001',
-      playlist_name: 'Default List Name',
+      playlist_name: '自藏经典bgm合集',
       cover_url: 'http://123.57.7.117/assets/images/album/IMG-00002.jpg',
       playlist: [1, 1, 1, 1, 1, 1, 1],
       rootComment: [1, 1, 1, 1, 1, 1],
     });
     const userInfo = ref({
-      username: 'Default Username',
+      username: 'staff_user',
       avatar_url: STATIC_BASE_URL + '/assets/images/avatar/default.jpg',
     });
     // const store = useStore();

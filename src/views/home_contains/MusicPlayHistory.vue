@@ -39,7 +39,7 @@ export default defineComponent({
     <div>
       <div class="funcArea">
         <div class="itemTitles">
-          <span>歌曲{{collectedMusic.length}}</span>
+          <span>歌曲54</span>
           <span>歌单{{collectedList.length}}</span>
           <span>专辑{{collectedAlbum.length}}</span>
         </div>

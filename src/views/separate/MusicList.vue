@@ -27,6 +27,59 @@ export default defineComponent({
         'album': 'temp music album',
         'duration': '3:14',
       };
+      const lis = [
+        {
+          'title': '周大侠',
+          'artist': '周杰伦',
+          'album': '大灌篮电影原声带',
+          'duration': '2:14',
+        },
+        {
+          'title': '群青',
+          'artist': 'YOASOBI',
+          'album': '群青',
+          'duration': '4:08',
+        },
+        {
+          'title': 'Song After Midnight(Song For Denise)',
+          'artist': 'Bon Entendeur /Piano Fantasia',
+          'album': 'Minuit',
+          'duration': '3:04',
+        },
+        {
+          'title': '花之塔',
+          'artist': '酸欠少女 (Sayuri)',
+          'album': '花之塔',
+          'duration': '4:55',
+        },
+        {
+          'title': 'Cold Blood(Explicit)',
+          'artist': 'Wilee / HOSPICEMANE',
+          'album': 'Cold Blood(Explicit)',
+          'duration': '3:06',
+        },
+        {
+          'title': 'Clam Night',
+          'artist': 'Narvent / Luneex',
+          'album': 'Clam Night',
+          'duration': '3:55',
+        },
+        {
+          'title': 'Dead Inside(Slap House)',
+          'artist': 'Tamboss)',
+          'album': 'Dead Inside(Slap House)',
+          'duration': '3:03',
+        },
+        {
+          'title': '花之塔',
+          'artist': '酸欠少女 (Sayuri)',
+          'album': '花之塔',
+          'duration': '4:55',
+        },
+      ];
+      for (const item in lis) {
+        if (lis.hasOwnProperty(item)) musicList.value.push(lis[item]);
+      }
       for (let i=0; i<40; i++) {
         musicList.value.push(tempInfo);
       }

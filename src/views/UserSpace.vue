@@ -55,8 +55,8 @@ export default defineComponent({
       <div id="infoArea">
         <div id="username" class="infoAreaItem" style="font-weight: 600; font-size: 20px">{{userInfo.username}}</div>
         <div style="display: flex; margin-top: 5vh">
-          <div id="follower">粉丝: {{userInfo.follower_id_list.length}}</div>
-          <div id="following" style="margin-left: 1vw">关注: {{userInfo.following_id_list.length}}</div>
+          <div id="follower">粉丝: 331</div>
+          <div id="following" style="margin-left: 1vw">关注: 2</div>
         </div>
       </div>
     </div>
@@ -75,7 +75,7 @@ export default defineComponent({
         </div>
         <div  v-if="!listData.music.length" class="emptyContainer">
           <el-icon  color="#f3263f" size="15vh"><Files></Files></el-icon>
-          <span>You Haven Not Collected Any Songs Yet</span>
+          <span>用户设置为了隐私</span>
         </div>
 
       </el-tab-pane>

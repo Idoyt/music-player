@@ -10,15 +10,15 @@ export default defineComponent({
     const store = useStore();
     const commentData = ref([]);
     const tempCommentData = {
-      'username': 'Temp Username',
+      'username': '三笠',
       'uuid': '1',
-      'avatar_url': '',
-      'date': '2024-11-28 13:14',
-      'content': 'Temp Comment Content...................................',
+      'avatar_url': 'https://i1.hdslb.com/bfs/archive/7511de18a65befe1237851e1619b84debdabf41a.jpg',
+      'date': '2023-11-28 13:14',
+      'content': '这个列表简直太棒啦',
       'likes': 23,
       'commentId': 'CMT-2001',
       'sonCommentsIdList': [
-        {'commentId': 'CMT-2002', 'username': 'Temp Username1', 'content': 'QAQ', 'likes': 123},
+        {'commentId': 'CMT-2002', 'username': '黄前久美子', 'content': '对对对！我也这么觉得', 'likes': 123},
         {'commentId': 'CMT-2002', 'username': 'Temp Username2', 'content': 'QwQ', 'likes': 123},
         {'commentId': 'CMT-2002', 'username': 'Temp Username3', 'content': 'OvO', 'likes': 123},
       ],
@@ -42,7 +42,11 @@ export default defineComponent({
 <template>
   <div id="commentBody">
     <div v-for="(data, index) in commentData" :key="index" class="commentBox">
-      <el-avatar :src="data.avatar_url" style="cursor: pointer" @click="navigateToUserSpace(data.uuid)"></el-avatar>
+      <el-avatar
+          src="http://123.57.7.117/assets/images/avatar/1.jpg"
+          style="cursor: pointer"
+          @click="navigateToUserSpace(data.uuid)"
+      />
       <div class="textArea">
         <span style="cursor: pointer" @click="navigateToUserSpace(data.uuid)">{{data.username}}</span>
         <span>{{data.date}}</span>

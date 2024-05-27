@@ -84,7 +84,7 @@ export default defineComponent({
       </div>
     </div>
 
-    <component :is = components[nowComponentIndex] style="flex-grow: 1"></component>
+    <component :is = components[nowComponentIndex] style="width: 87vw"></component>
   </div>
 </template>
 
@@ -98,7 +98,7 @@ export default defineComponent({
 }
 #menuBody
 {
-  width: auto;
+  width: 13vw;
   height: 100%;
   background-color: #f0f4f9;
 }

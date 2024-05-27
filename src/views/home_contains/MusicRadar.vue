@@ -8,7 +8,7 @@ export default defineComponent({
   components: {LittleTile, SingleRecommendation},
   setup() {
     const listData = reactive({
-      '热门': [],
+      '热门': ['随心听', '抖音神曲', '深度催眠', '情感治愈站', 'KTV必点歌', '经典', '网络流行', '宝宝胎教', '', '', '', ''],
       '主题': [],
       '情感': [],
       '场景': [],
@@ -18,19 +18,29 @@ export default defineComponent({
       '乐器': [],
     });
     const listDataKeys = computed(()=>Object.keys(listData));
+    const coverUrl = [
+      'https://y.qq.com/music/common/upload/t_music_radio/1260297.jpg?max_age=2592000',
+      'https://y.qq.com/music/common/upload/t_music_radio/2054458.jpg?max_age=2592000',
+      'https://y.qq.com/music/common/upload/t_music_radio/3188826.jpg?max_age=2592000',
+      'https://y.qq.com/music/common/upload/t_music_radio/2929760.jpg?max_age=2592000',
+      'https://y.qq.com/music/common/upload/t_music_radio/2054525.jpg?max_age=2592000',
+      'https://y.qq.com/music/common/upload/t_music_radio/2054444.jpg?max_age=2592000',
+      'https://y.qq.com/music/common/upload/t_music_radio/2054505.jpg?max_age=2592000',
+      'https://y.qq.com/music/common/upload/t_music_radio/4488415.jpeg',
+      'https://y.qq.com/music/common/upload/t_music_radio/2054474.jpg?max_age=2592000',
+      'https://y.qq.com/music/common/upload/t_music_radio/3171367.jpg?max_age=2592000',
+      'https://y.qq.com/music/common/upload/t_music_radio/2054413.jpg?max_age=2592000',
+      'https://y.qq.com/music/common/upload/t_music_radio/2054526.jpg?max_age=2592000',
+    ];
 
     onBeforeMount(()=>{
-      for (const key in listData) {
-        if (!listData.hasOwnProperty(key)) continue;
-        for (let i=0; i<20; i++) {
-          listData[key].push(i);
-        }
-      }
+
     });
 
     return {
       listData,
       listDataKeys,
+      coverUrl,
     };
   },
 });
@@ -45,9 +55,9 @@ export default defineComponent({
       <div v-for="(key) in listDataKeys" :key="key">
         <span style="font-weight: 600; font-size: 20px">{{key}}</span>
         <div class="tileContainer">
-          <div v-for="(item) in listData[key]" :key="item">
+          <div v-for="(item, index) in listData[key]" :key="item">
             <div>
-              <LittleTile :show-play-volume="false"/>
+              <LittleTile :list_cover="coverUrl[index]" :show-play-volume="false" style="height: 28vh"/>
               <span>{{item}}</span>
             </div>
           </div>

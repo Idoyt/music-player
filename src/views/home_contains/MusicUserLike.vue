@@ -39,9 +39,9 @@ export default defineComponent({
     <div>
       <div class="funcArea">
         <div class="itemTitles">
-          <span>歌曲{{collectedMusic.length}}</span>
-          <span>歌单{{collectedList.length}}</span>
-          <span>专辑{{collectedAlbum.length}}</span>
+          <span>歌曲83</span>
+          <span>歌单4</span>
+          <span>专辑0</span>
         </div>
         <div class="funcButtons">
           <button class="funcBtn" style="background-color: #f3263f">播放全部</button>
