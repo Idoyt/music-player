@@ -52,7 +52,7 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 1.2vh;
+  border-radius: 14px;
 
   height: 100%;
   aspect-ratio: 1/1;
@@ -110,11 +110,11 @@ export default defineComponent({
 .playVolume
 {
   position: absolute;
-  padding: .1vh .2vw;
+  padding: 1px 8px 1px 8px;
   right: 0;
   bottom: 0;
-  margin-right: 1vw;
-  margin-bottom: 2vh;
+  margin-right: 10px;
+  margin-bottom: 8px;
   white-space: nowrap;
 
   color: white;

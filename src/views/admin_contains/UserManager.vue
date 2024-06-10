@@ -61,7 +61,7 @@ export default defineComponent({
 
 <template>
   <div id="userManagerBody">
-    <span style="font-size: 20px; font-weight: 500;margin-top: 1vh">User Information Table (Max for 100)</span>
+    <span style="font-size: 20px; font-weight: 500;margin-top: 1vh">用户信息表</span>
     <el-table :data = userInfo stripe style="width: 100%">
       <el-table-column label="UUID" prop="uuid" sortable />
       <el-table-column label="Email" prop="email" sortable />

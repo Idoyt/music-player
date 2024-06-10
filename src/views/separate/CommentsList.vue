@@ -10,12 +10,12 @@ export default defineComponent({
     const store = useStore();
     const commentData = ref([]);
     const tempCommentData = {
-      'username': '三笠',
+      'username': '明日香',
       'uuid': '1',
-      'avatar_url': 'https://i1.hdslb.com/bfs/archive/7511de18a65befe1237851e1619b84debdabf41a.jpg',
-      'date': '2023-11-28 13:14',
-      'content': '这个列表简直太棒啦',
-      'likes': 23,
+      'avatar_url': 'http://123.57.7.117/assets/images/avatar/2.jpg',
+      'date': '2023-12-2 5:20',
+      'content': '第三首简直是如同天籁的音乐',
+      'likes': 523,
       'commentId': 'CMT-2001',
       'sonCommentsIdList': [
         {'commentId': 'CMT-2002', 'username': '黄前久美子', 'content': '对对对！我也这么觉得', 'likes': 123},
@@ -29,6 +29,22 @@ export default defineComponent({
     };
 
     onBeforeMount(()=>{
+      commentData.value.push(
+          {
+            'username': '三笠',
+            'uuid': '1',
+            'avatar_url': 'http://123.57.7.117/assets/images/avatar/1.jpg',
+            'date': '2023-11-28 13:14',
+            'content': '这个列表简直太棒啦',
+            'likes': 623,
+            'commentId': 'CMT-2001',
+            'sonCommentsIdList': [
+              {'commentId': 'CMT-2002', 'username': '艾伦', 'content': '对对对！我也这么觉得', 'likes': 123},
+              {'commentId': 'CMT-2002', 'username': 'Temp Username2', 'content': 'QwQ', 'likes': 123},
+              {'commentId': 'CMT-2002', 'username': 'Temp Username3', 'content': 'OvO', 'likes': 123},
+            ],
+          },
+      );
       for (let i=0; i<10; i++) commentData.value.push(tempCommentData);
     });
     return {
@@ -43,7 +59,7 @@ export default defineComponent({
   <div id="commentBody">
     <div v-for="(data, index) in commentData" :key="index" class="commentBox">
       <el-avatar
-          src="http://123.57.7.117/assets/images/avatar/1.jpg"
+          :src="data.avatar_url"
           style="cursor: pointer"
           @click="navigateToUserSpace(data.uuid)"
       />

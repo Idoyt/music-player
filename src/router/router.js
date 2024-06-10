@@ -22,7 +22,7 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: ()=>import('@/views/LoginPage.vue'),
+    component: ()=>import('@/views/AccountCheck.vue'),
   },
   {
     path: '/space',
@@ -32,7 +32,7 @@ const routes = [
   {
     path: '/test',
     name: 'test',
-    component: ()=>import('@/views/UserSpace.vue'),
+    component: ()=>import('@/views/AccountCheck.vue'),
   },
 ];
 

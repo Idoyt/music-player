@@ -81,25 +81,25 @@ export default defineComponent({
 
   height: 100%;
 
-  --search-height: 5vh;
-  --search-widht: 20vw;
+  --search-height: 35px;
+  --search-widht: 230px;
 }
 #search
 {
   display: flex;
   position: relative;
   align-items: center;
-  margin-left: 4vw;
+  margin-left: 40px;
   height: var(--search-height);
   width: var(--search-widht);
 
-  border-radius: 2vh;
+  border-radius: 16px;
   background-color: rgba(255, 255, 255, 0.5);
 
 }
 #input
 {
-  margin-left: 1vw;
+  margin-left: 10px;
   padding: 0;
 
   height: var(--search-height);

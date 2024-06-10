@@ -34,13 +34,13 @@ export default defineComponent({
 
 <template>
   <div id="singleRecommend">
-    <div style="height: 18vh;margin-left: 2vw">
+    <div style="height: 120px;margin-left: 30px">
       <LITTLE_TILE :show-play-volume="false" list_cover="http://123.57.7.117/assets/images/album/IMG-00002.jpg"></LITTLE_TILE>
     </div>
     <div style="display: flex; flex-direction: column;">
       <div id="recommendTitle">{{nowMusicInfo.musicName}}</div>
       <div id="recommendArtist">{{nowMusicInfo.artist}}</div>
-      <div style="margin-top: 2vh">
+      <div style="margin-top: 20px">
         <el-image src="http://123.57.7.117/static/icon/play_bar/next_red.svg" style="height: 3vh; margin-right: 1vw"></el-image>
         <el-image src="http://123.57.7.117/static/icon/play_bar/dislike.svg" style="height: 3vh; margin-right: 1vw"></el-image>
         <el-image fit="cover" src="http://123.57.7.117/static/icon/play_bar/comment.svg" style="height: 3vh; margin-right: 1vw"></el-image>
@@ -56,8 +56,8 @@ export default defineComponent({
   height: 100%;
   width: 100%;
   background-color: #75afaf;
-  border-radius: 3vh;
+  border-radius: 26px;
   align-items: center;
-  gap: 1vw
+  gap: 10px;
 }
 </style>

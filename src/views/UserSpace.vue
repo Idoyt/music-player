@@ -34,6 +34,7 @@ export default defineComponent({
       if (response.data.state === 'success') {
         listData.playlist = response.data.message;
       }
+      userInfo.avatar_url = 'http://123.57.7.117/assets/images/avatar/default.jpg';
     });
 
 
@@ -54,6 +55,10 @@ export default defineComponent({
       </el-avatar>
       <div id="infoArea">
         <div id="username" class="infoAreaItem" style="font-weight: 600; font-size: 20px">{{userInfo.username}}</div>
+        <div>
+          <span>设为公开</span>
+          <el-switch></el-switch>
+        </div>
         <div style="display: flex; margin-top: 5vh">
           <div id="follower">粉丝: 331</div>
           <div id="following" style="margin-left: 1vw">关注: 2</div>

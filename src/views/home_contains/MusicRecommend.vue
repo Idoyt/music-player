@@ -45,7 +45,7 @@ export default defineComponent({
 <template>
   <div id="recommendBody">
     <div>
-      <span class="title">Recommendations</span>
+      <span class="title">Hi {{userInfo.username}}! 今日为你推荐</span>
       <div id="today">
         <div style="height: 90%">
           <SingleRecommendation></SingleRecommendation>
@@ -72,7 +72,7 @@ export default defineComponent({
 
 
     <div style="margin-top: 5vh">
-      <span class="title">Playlist Recommend</span>
+      <span class="title">歌单推荐</span>
       <div id="playlistRecommend">
         <div v-for="item in recommendedList" :key="item">
           <LITTLE_TILE :list_cover="cover_list[item]" :play_volume="Math.floor(Math.random() *8000 + 1000)" class="tile"></LITTLE_TILE>
@@ -86,8 +86,8 @@ export default defineComponent({
 <style scoped>
 #recommendBody
 {
-  margin-left: 2vw;
-  margin-right: 2vw;
+  margin-left: 20px;
+  margin-right: 20px;
   display: flex;
   flex-direction: column;
 }
@@ -100,11 +100,11 @@ export default defineComponent({
   display: grid;
   width: 100%;
   grid-template-columns: 2fr repeat(4, 1fr);
-  grid-gap: 2vw;
+  grid-gap: 20px;
 }
 .tile
 {
-  height: 26vh;
+  height: 200px;
 }
 .tile:hover
 {
@@ -114,7 +114,7 @@ export default defineComponent({
 {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  grid-gap: 2vw;
+  grid-gap: 20px;
 }
 </style>
 

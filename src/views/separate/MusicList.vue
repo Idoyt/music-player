@@ -29,17 +29,18 @@ export default defineComponent({
       };
       const lis = [
         {
-          'title': '周大侠',
-          'artist': '周杰伦',
-          'album': '大灌篮电影原声带',
-          'duration': '2:14',
+          'title': 'Clam Night',
+          'artist': 'Narvent / Luneex',
+          'album': 'Clam Night',
+          'duration': '3:55',
         },
         {
-          'title': '群青',
-          'artist': 'YOASOBI',
-          'album': '群青',
-          'duration': '4:08',
+          'title': 'Cold Blood(Explicit)',
+          'artist': 'Wilee / HOSPICEMANE',
+          'album': 'Cold Blood(Explicit)',
+          'duration': '3:06',
         },
+
         {
           'title': 'Song After Midnight(Song For Denise)',
           'artist': 'Bon Entendeur /Piano Fantasia',
@@ -53,16 +54,16 @@ export default defineComponent({
           'duration': '4:55',
         },
         {
-          'title': 'Cold Blood(Explicit)',
-          'artist': 'Wilee / HOSPICEMANE',
-          'album': 'Cold Blood(Explicit)',
-          'duration': '3:06',
+          'title': '不眠之夜',
+          'artist': '张杰 /HOYO-MiX',
+          'album': '崩坏星穹铁道-不眠之夜 WHITE NIGHT',
+          'duration': '2:18',
         },
         {
-          'title': 'Clam Night',
-          'artist': 'Narvent / Luneex',
-          'album': 'Clam Night',
-          'duration': '3:55',
+          'title': 'The Forevers',
+          'artist': 'Jo Blankenburg',
+          'album': 'Clandestine III: Emanence',
+          'duration': '3:03',
         },
         {
           'title': 'Dead Inside(Slap House)',
@@ -70,6 +71,8 @@ export default defineComponent({
           'album': 'Dead Inside(Slap House)',
           'duration': '3:03',
         },
+
+
         {
           'title': '花之塔',
           'artist': '酸欠少女 (Sayuri)',

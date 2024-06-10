@@ -1,3 +1,10 @@
+<!--
+已弃用
+原路径: /src/views
+替代组件: /src/views/AccountCheck.vue
+2024.6.10
+-->
+
 <script>
 import {defineComponent, onMounted, ref, watch} from 'vue';
 import GoogleInput from '@/components/GoogleLikeInputBox.vue';

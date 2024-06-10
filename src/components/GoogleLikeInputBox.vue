@@ -1,39 +1,23 @@
 <script>
-import {computed, defineComponent, onMounted, ref} from 'vue';
+import {computed, defineComponent, onMounted, ref, watch} from 'vue';
 import {STATIC_BASE_URL} from '@/assets/constants';
 
 export default defineComponent({
   name: 'Google_Input',
   props: {
-    placeholder: {
-      type: String,
-      default: '输入内容',
-      validator: (value) => {
-        return value.length < 21;
-      },
-    },
-    state: {
-      type: String,
-      default: 'Correct',
-      validator: (value) => {
-        const allowedValue = ['Correct', 'Error'];
-        return allowedValue.includes(value);
-      },
-    },
+    placeholder: String,
     type: {
       type: String,
-      // text, password
       default: 'text',
-      validator: (value) => {
-        const allowedValue = ['text', 'password'];
-        return allowedValue.includes(value);
-      },
     },
     needSelect: {
       type: Boolean,
       default: true,
     },
-    id: String,
+    checkResult: {
+      type: Number,
+      default: -1,
+    },
   },
   setup(props, {emit}) {
     // param for main content
@@ -43,7 +27,7 @@ export default defineComponent({
     const domInput = ref(null);
     const domPlaceholder = ref(null);
 
-    // param for state
+    // param for status
     const inputType = ref('text');
     const isPwd = ref(false);
     const showPwdState = ref('clos');
@@ -59,24 +43,23 @@ export default defineComponent({
 
     const focusStyle = ()=>{
       if (!domInput.value) return;
-      domInput.value.classList.add('input' + props.state);
+      domInput.value.classList.add('inputCorrect');
       domInput.value.classList.add('inputFocus');
 
-      domPlaceholder.value.classList.add('placeholder' + props.state);
+      domPlaceholder.value.classList.add('placeholderCorrect');
       domPlaceholder.value.classList.add('placeholderFocus');
     };
     const focus = ()=>{
       focusStyle();
       if (props.needSelect && inputText.value!=='') domInput.value.select();
-      // console.log(domInput.value.classList);
     };
     const blur = ()=>{
       if (inputText.value === '') {
         domPlaceholder.value.classList.remove('placeholderFocus');
       } else focusStyle();
       if (domPlaceholder.value !== null && domInput.value !== null) {
-        domPlaceholder.value.classList.remove('placeholder' + props.state);
-        domInput.value.classList.remove('input' + props.state);
+        domPlaceholder.value.classList.remove('placeholderCorrect');
+        domInput.value.classList.remove('inputCorrect');
         domInput.value.classList.remove('inputFocus');
       }
     };
@@ -86,7 +69,7 @@ export default defineComponent({
     };
 
     const returnValue = ()=>{
-      emit('value', inputText.value);
+      emit('update:modelValue', inputText.value);
     };
 
     onMounted(()=>{
@@ -96,6 +79,15 @@ export default defineComponent({
       } else {
         if (!domInput.value) return;
         domInput.value.classList.remove('inputPwd');
+      }
+    });
+
+    watch(()=>props.checkResult, (value)=>{
+      if (value === 0) {
+        console.log('fail');
+      }
+      if (value === 1) {
+        console.log('success');
       }
     });
     return {
@@ -132,6 +124,7 @@ export default defineComponent({
           id="showPwd"
           :src=imageSrc
           @click = showPassword
+          alt="none"
       />
     </div>
 

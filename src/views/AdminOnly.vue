@@ -54,33 +54,33 @@ export default defineComponent({
 <template>
   <div id="adminPageBody">
     <div id="menuBody">
-      <span id="menuTitle">Option Menu</span>
+      <span id="menuTitle">操作栏</span>
       <el-menu active-text-color="#88cccc" class="menu">
         <el-menu-item index="0" @click="changeNowComponentIndex(0)">
           <el-icon><User/></el-icon>
-          <span>User Manage</span>
+          <span>用户管理</span>
         </el-menu-item>
 
         <el-menu-item index="1" @click="changeNowComponentIndex(1)">
           <el-icon><MessageBox/></el-icon>
-          <span>Submitted Tasks</span>
+          <span>提交的任务</span>
         </el-menu-item>
 
         <el-sub-menu index="2">
           <template #title>
             <el-icon><Headset/></el-icon>
-            <span>Music Manage</span>
+            <span>音乐管理</span>
           </template>
           <el-menu-item index="2-1" @click="changeNowComponentIndex(2)">
-            <span>Audio Manage</span>
+            <span>音乐单曲</span>
           </el-menu-item>
           <el-menu-item index="2-2" @click="changeNowComponentIndex(3)">
-            <span>Playlist Manage</span>
+            <span>播放列表</span>
           </el-menu-item>
         </el-sub-menu>
       </el-menu>
       <div style="cursor: pointer; text-align: center; width: 100%" @click="$router.push('/')">
-        <span>Back To Home</span>
+        <span>返回主页</span>
       </div>
     </div>
 

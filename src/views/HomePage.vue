@@ -18,12 +18,14 @@ import {getCurrentTime} from '@/utils/music_play_bus';
 import {useRouter} from 'vue-router';
 import axios from 'axios';
 import {API_BASE_URL} from '@/assets/constants';
+import {DocumentAdd} from '@element-plus/icons-vue';
 
 
 export default defineComponent({
   name: 'homePage',
   // 工具类Component需要放在组件Personalized之前
   components: {
+    DocumentAdd,
     audioPlayBar,
     topBar,
 
@@ -58,14 +60,18 @@ export default defineComponent({
       // check login status
       data = {'email': store.state.audioModule.userInfo.email};
       response = await axios.get(API_BASE_URL + '/check_login/', {params: data, withCredentials: true});
-      if (response.data.state !== 'success') await router.push('/login');
+      if (response.data.status !== 'success') await router.push('/login');
 
 
       // get playlist user created
       data = {};
       response = await axios.get(API_BASE_URL + '/get_playlist_info/', {params: data, withCredentials: true});
-      if (response.data.state === 'success') {
+      if (response.data.status === 'success') {
         playlist.value = response.data.message;
+        playlist.value = [
+          {list_name: '轻音乐30首'},
+          {list_name: '最佳ACG歌曲'},
+        ];
       }
     });
 
@@ -88,46 +94,46 @@ export default defineComponent({
   <div id="appBody">
     <div id="menuBar">
       <el-menu v-model="usingComponent" style="height: 100%">
-        <span style="padding: 1vh 20px 0 20px; font-size: 30px; white-space: nowrap">Miku Music</span>
-        <el-menu-item-group title="Online Music">
+        <span style="padding: 1vh 20px 0 20px; font-size: 30px; white-space: nowrap">米库音乐</span>
+        <el-menu-item-group title="在线音乐">
           <el-menu-item index="0" @click="navigate('recommendationPage')">
-            <span class="menuItem">Recommendation</span>
+            <span class="menuItem">推荐</span>
           </el-menu-item>
           <el-menu-item index="1" @click="navigate('audioHall')">
-            <span class="menuItem">Music Hall</span>
+            <span class="menuItem">音乐馆</span>
           </el-menu-item>
           <el-menu-item index="2" @click="navigate('audioRadar')">
-            <span class="menuItem">Music Radar</span>
+            <span class="menuItem">雷达</span>
           </el-menu-item>
         </el-menu-item-group>
 
-        <el-menu-item-group title="My Music">
+        <el-menu-item-group title="我的音乐">
           <el-menu-item index="3" @click="navigate('audioCollected')">
-            <span class="menuItem">Collected Music</span>
+            <span class="menuItem">我喜欢</span>
           </el-menu-item>
-          <el-menu-item index="4" @click="navigate('usersFollowed')">
-            <span class="menuItem">My Followings</span>
-          </el-menu-item>
+<!--          <el-menu-item index="4" @click="navigate('usersFollowed')">-->
+<!--            <span class="menuItem">我的关注</span>-->
+<!--          </el-menu-item>-->
           <el-menu-item index="5" @click="navigate('recordPlayed')">
-            <span class="menuItem">Recently Play</span>
+            <span class="menuItem">最近播放</span>
           </el-menu-item>
         </el-menu-item-group>
 
         <el-menu-item-group title="Created List">
-          <div style="min-height: 3vh">
+          <div style="min-height: 3vh; display: flex; flex-direction: column; gap: 1vh; margin-left: 1vw; justify-content: center">
             <div v-for="item in playlist" :key="item">
-              <span>{{item.list_name}}</span>
+              <span style="font-family: 'Microsoft YaHei', serif; font-size: 14px">{{item.list_name}}</span>
             </div>
           </div>
         </el-menu-item-group>
 
-        <el-menu-item-group title="Selected List">
-          <div style="min-height: 3vh">
-            <div v-for="item in playlist" :key="item">
-              <span>{{item.list_name}}</span>
-            </div>
-          </div>
-        </el-menu-item-group>
+<!--        <el-menu-item-group title="User Selected">-->
+<!--          <div style="min-height: 3vh">-->
+<!--            <div v-for="item in playlist" :key="item">-->
+<!--              <span>{{item.list_name}}</span>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </el-menu-item-group>-->
       </el-menu>
     </div>
 
@@ -154,8 +160,9 @@ export default defineComponent({
 #appBody
 {
   position: relative;
-  height: 100vh;
-  width: 100vw;
+  min-height: 400px;
+  max-width: 100vw;
+  min-width: 1200px;
   display: grid;
   grid-template-columns: auto 1fr;
   background-color: #88cccc;
@@ -164,7 +171,7 @@ export default defineComponent({
 {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: inherit;
   width: 100%;
   font-family: miku_font, serif;
 }
